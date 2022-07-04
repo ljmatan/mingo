@@ -234,17 +234,20 @@ class _DashboardPageFilterViewState extends State<DashboardPageFilterView> {
                             Padding(
                               padding: const EdgeInsets.fromLTRB(16, 0, 16, 6),
                               child: _SelectableButton(
-                                initialValue: MinGOData.filteredFuelTypes.contains(value.id) ||
+                                initialValue: MinGOData.filteredFuelTypes.where((e) => e['name'] == value.name).isNotEmpty ||
                                     MinGOData.filteredOptions.contains(value.id) ||
                                     MinGOData.filteredProviders.contains(value.id),
                                 label: value.name,
                                 onTap: () {
                                   switch (selected.data) {
                                     case 0:
-                                      if (MinGOData.filteredFuelTypes.contains(value.fuelKindId)) {
-                                        MinGOData.filteredFuelTypes.remove(value.fuelKindId);
+                                      if (MinGOData.filteredFuelTypes.where((e) => e['id'] == value.fuelKindId).isNotEmpty) {
+                                        MinGOData.filteredFuelTypes.removeWhere((e) => e['id'] == value.fuelKindId);
                                       } else {
-                                        MinGOData.filteredFuelTypes.add(value.fuelKindId);
+                                        MinGOData.filteredFuelTypes.add({
+                                          'id': value.fuelKindId,
+                                          'name': value.name,
+                                        });
                                       }
                                       MinGOData.updateFilteredMarkers();
                                       break;

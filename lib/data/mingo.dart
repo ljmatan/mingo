@@ -193,9 +193,12 @@ abstract class MinGOData {
         .toList();
   }
 
-  static final filteredFuelTypes = <int>[];
+  static final filteredFuelTypes = <Map<String, dynamic>>[];
   static bool isFilteredFuelType(Station station) =>
-      filteredFuelTypes.isEmpty || station.priceList.any((price) => filteredFuelTypes.contains(price.id));
+      filteredFuelTypes.isEmpty ||
+      station.priceList.any(
+        (price) => filteredFuelTypes.where((e) => e['id'] == instance.fuels.firstWhere((f) => f.id == price.fuelId).fuelKindId).isNotEmpty,
+      );
 
   static final filteredOptions = <int>[];
   static bool isFilteredOption(Station station) =>
