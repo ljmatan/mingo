@@ -84,6 +84,7 @@ class _MinGOSplashState extends State<MinGOSplash> {
       await MinGOData.getFuelTypesByStation();
       debugPrint('App data set');
       MinGOData.stations = await MinGOData.getStationsInRadius();
+      MinGOData.updateFilteredMarkers();
       MinGOData.openStations = MinGOData.getOpenStations;
       debugPrint('Stations filtered');
     });

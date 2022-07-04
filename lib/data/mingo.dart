@@ -28,7 +28,7 @@ abstract class MinGOData {
         return false;
       },
     );
-    value.fuels.removeWhere((e) => e.name == null || e.providerId == null || e.fuelTypeId == null);
+    value.fuels.removeWhere((e) => e.name == null || e.providerId == null || e.fuelKindId == null);
     value.fuels.removeWhere((f) => value.stations.where((s) => s.priceList.where((p) => p.fuelId == f.id).isNotEmpty).isEmpty);
     value.providers.removeWhere((p) => value.stations.where((s) => s.providerId == p.id).isEmpty);
     instance = value;
@@ -54,7 +54,7 @@ abstract class MinGOData {
 
     for (var station in stations) {
       final prices = station.priceList.where(
-        (price) => fuels.where((fuel) => fuel.id == price.fuelId && fuel.fuelTypeId == fuelTypeId).isNotEmpty,
+        (price) => fuels.where((fuel) => fuel.id == price.fuelId && fuel.id == fuelTypeId).isNotEmpty,
       );
       if (prices.isEmpty) continue;
       var lowestPrice = double.infinity;
@@ -95,12 +95,12 @@ abstract class MinGOData {
     final stations = List<Station>.from(data['stations']);
     final fuels = List<Fuel>.from(data['fuels']);
     return {
-      for (var fuelTypeId in <int>{1, 2, 3, 4})
+      for (var fuelKindId in <int>{1, 2, 3, 4})
         Set<int>.from(
           stations
               .where(
                 (station) => station.priceList
-                    .where((price) => fuels.firstWhere((fuel) => fuel.id == price.fuelId).fuelTypeId == fuelTypeId)
+                    .where((price) => fuels.firstWhere((fuel) => fuel.id == price.fuelId).fuelKindId == fuelKindId)
                     .isNotEmpty,
               )
               .map((e) => e.id),
@@ -121,15 +121,8 @@ abstract class MinGOData {
   }
 
   static bool isFuelKind(Station station) {
-    final fuelTypeId = filterConfig.fuelTypeId! - 1;
-    return filterConfig.fuelTypeId == null ||
-        _fuelTypesByStation
-            .elementAt(fuelTypeId < 2
-                ? fuelTypeId
-                : fuelTypeId == 2
-                    ? 9
-                    : 10)
-            .contains(station.id);
+    final fuelTypeId = filterConfig.fuelTypeId != null ? filterConfig.fuelTypeId! - 1 : null;
+    return filterConfig.fuelTypeId == null || _fuelTypesByStation.elementAt(fuelTypeId!).contains(station.id);
   }
 
   static double? get selectedDistance {
@@ -289,7 +282,7 @@ abstract class MinGOData {
   }
 
   static void resetFilters() {
-    filterConfig.fuelTypeId = null;
+    filterConfig.fuelTypeId = 1;
     filterConfig.distanceId = null;
     filteredFuelTypes.clear();
     filteredOptions.clear();

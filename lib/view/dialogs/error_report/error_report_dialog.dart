@@ -29,7 +29,7 @@ class _ErrorReportDialogState extends State<ErrorReportDialog> {
       key: _dialogKey,
       children: [
         const MinGOTitle(
-          label: 'Registracija',
+          label: 'Prijava greške',
           brightness: Brightness.dark,
         ),
         Padding(
@@ -77,7 +77,6 @@ class _ErrorReportDialogState extends State<ErrorReportDialog> {
               ),
               const SizedBox(height: 16),
               DropdownButtonFormField<int>(
-                key: UniqueKey(),
                 value: _stationId,
                 elevation: 0,
                 isExpanded: true,
@@ -121,7 +120,7 @@ class _ErrorReportDialogState extends State<ErrorReportDialog> {
           ),
         ),
         MinGOActionButton(
-          label: 'Registracija',
+          label: 'Pošalji',
           icon: Icons.chevron_right,
           onTap: () async {
             if (_formKey.currentState!.validate()) {

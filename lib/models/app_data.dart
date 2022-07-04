@@ -149,21 +149,26 @@ class StationOption {
 class Fuel {
   final int id;
   final String? name, mark;
-  final int? providerId, fuelTypeId;
+  final int? providerId, fuelKindId;
 
   Fuel({
     required this.name,
     this.mark,
     required this.providerId,
     required this.id,
-    required this.fuelTypeId,
+    required this.fuelKindId,
   });
 
   factory Fuel.fromJson(Map<String, dynamic> json) {
+    final fuelKindId = json['vrsta_goriva_id'];
     return Fuel(
       id: json['id'],
       providerId: json['obveznik_id'],
-      fuelTypeId: json['vrsta_goriva_id'],
+      fuelKindId: fuelKindId == 9
+          ? 2
+          : fuelKindId == 10
+              ? 3
+              : fuelKindId,
       name: json['naziv'],
       mark: json['oznaka'],
     );
