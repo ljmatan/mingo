@@ -34,7 +34,7 @@ class __ButtonOptionState extends State<_ButtonOption> {
           width: widget.width,
           height: 40,
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12),
+            padding: MediaQuery.of(context).size.width < 500 ? EdgeInsets.zero : const EdgeInsets.symmetric(horizontal: 12),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -90,7 +90,7 @@ class _DashboardPageAnimatedDropdownState extends State<DashboardPageAnimatedDro
   Offset? _widgetOffset;
   double get _fullItemsHeight => widget.children.length * 40;
   double get _heightCutoff => MediaQuery.of(context).size.height * .4;
-  double get _itemsHeight => _fullItemsHeight < _heightCutoff ? _fullItemsHeight : _heightCutoff;
+  // double get _itemsHeight => _fullItemsHeight < _heightCutoff ? _fullItemsHeight : _heightCutoff;
 
   void _getWidgetInfo() {
     _renderBox = _widgetKey.currentContext!.findRenderObject() as RenderBox;
@@ -157,7 +157,7 @@ class _DashboardPageAnimatedDropdownState extends State<DashboardPageAnimatedDro
                         ),
                         child: SizedBox(
                           width: _renderBox!.size.width,
-                          height: _itemsHeight + 24,
+                          height: _fullItemsHeight + widget.children.length * 6 + 18,
                           child: ListView(
                             padding: MediaQuery.of(context).size.width < 1100
                                 ? const EdgeInsets.fromLTRB(12, 12, 12, 6)
@@ -168,7 +168,7 @@ class _DashboardPageAnimatedDropdownState extends State<DashboardPageAnimatedDro
                             children: [
                               for (int i = 0; i < widget.children.length; i++)
                                 Padding(
-                                  padding: const EdgeInsets.only(bottom: 8),
+                                  padding: const EdgeInsets.only(bottom: 6),
                                   child: _ButtonOption(
                                     label: widget.children[i],
                                     width: _renderBox!.size.width,

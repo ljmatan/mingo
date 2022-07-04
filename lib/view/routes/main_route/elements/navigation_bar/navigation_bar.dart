@@ -10,7 +10,7 @@ import 'package:mingo/view/theme.dart';
 class MinGONavigationBar extends StatefulWidget {
   const MinGONavigationBar({super.key});
 
-  static Set<String> get pageLabels => <String>{
+  static Set<String> get pageLabels => {
         'Naslovnica',
         'Obveznici',
         'Upute',
