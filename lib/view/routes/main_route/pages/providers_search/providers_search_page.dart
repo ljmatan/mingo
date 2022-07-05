@@ -195,12 +195,16 @@ class _ProvidersSearchPageState extends State<ProvidersSearchPage> with WidgetsB
                                   builder: (context, hasFocus) {
                                     final providers = _textInputController.text.isNotEmpty
                                         ? MinGOData.instance.providers.where(
-                                            (e) => e.name
-                                                .split(' ')
-                                                .where(
-                                                  (e) => e.toLowerCase().startsWith(_textInputController.text.toLowerCase()),
-                                                )
-                                                .isNotEmpty,
+                                            (e) =>
+                                                _textInputController.text.trim().length > 3 &&
+                                                    e.name.toLowerCase().contains(_textInputController.text.trim().toLowerCase()) ||
+                                                e.name.toLowerCase().startsWith(_textInputController.text.trim().toLowerCase()) ||
+                                                e.name
+                                                    .split(' ')
+                                                    .where(
+                                                      (e) => e.toLowerCase().startsWith(_textInputController.text.trim().toLowerCase()),
+                                                    )
+                                                    .isNotEmpty,
                                           )
                                         : MinGOData.instance.providers;
                                     return Padding(

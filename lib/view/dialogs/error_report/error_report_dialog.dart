@@ -35,7 +35,7 @@ class _ErrorReportDialogState extends State<ErrorReportDialog> {
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 20),
           child: Text(
-            'Kreirajte svoj MINGO profil',
+            'Kontaktirajte nas pomoću forme',
             style: Theme.of(context).textTheme.bodyText1,
           ),
         ),
