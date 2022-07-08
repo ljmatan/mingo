@@ -50,29 +50,78 @@ class FuelPreview extends StatelessWidget {
                     maxLines: 1,
                   ),
                 ),
-                Row(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    Text(
-                      '${price.price} ',
-                      style: const TextStyle(
-                        fontWeight: FontWeight.w600,
-                        fontSize: 16,
-                      ),
-                    ),
-                    const Padding(
-                      padding: EdgeInsets.only(bottom: 1),
-                      child: Text(
-                        'HRK / L',
-                        style: TextStyle(
+                if (DateTime.now().year >= 2023)
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Text(
+                        '${(price.priceInEur).toStringAsFixed(2)} ',
+                        style: const TextStyle(
                           fontWeight: FontWeight.w600,
-                          fontSize: 11,
+                          fontSize: 16,
                         ),
                       ),
-                    ),
-                  ],
-                ),
+                      const Padding(
+                        padding: EdgeInsets.only(bottom: 1),
+                        child: Text(
+                          'EUR / L',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 11,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                if (DateTime.now().year < 2023 || DateTime.now().year == 2023 && DateTime.now().month < 6)
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Text(
+                        '${price.price} ',
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 16,
+                        ),
+                      ),
+                      const Padding(
+                        padding: EdgeInsets.only(bottom: 1),
+                        child: Text(
+                          'HRK / L',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 11,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                if (DateTime.now().year < 2023)
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Text(
+                        '${(price.priceInEur).toStringAsFixed(2)} ',
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 16,
+                        ),
+                      ),
+                      const Padding(
+                        padding: EdgeInsets.only(bottom: 1),
+                        child: Text(
+                          'EUR / L',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 11,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
               ],
             ),
           ],

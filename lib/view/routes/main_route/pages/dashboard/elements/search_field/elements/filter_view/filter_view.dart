@@ -287,7 +287,7 @@ class _DashboardPageFilterViewState extends State<DashboardPageFilterView> {
                                   Padding(
                                     padding: const EdgeInsets.only(bottom: 6),
                                     child: _SelectableButton(
-                                      initialValue: false,
+                                      initialValue: MinGOData.filteredWorkDays.contains(i),
                                       label: _filterOptions(selected.data!).elementAt(i),
                                       onTap: () {
                                         MinGOData.filteredWorkDays.contains(i)

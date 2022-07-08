@@ -54,7 +54,7 @@ abstract class MinGOData {
 
     for (var station in stations) {
       final prices = station.priceList.where(
-        (price) => fuels.where((fuel) => fuel.id == price.fuelId && fuel.id == fuelTypeId).isNotEmpty,
+        (price) => fuels.where((fuel) => fuel.id == price.fuelId && fuel.fuelKindId == fuelTypeId).isNotEmpty,
       );
       if (prices.isEmpty) continue;
       var lowestPrice = double.infinity;
@@ -86,7 +86,7 @@ abstract class MinGOData {
     debugPrint('Computing ordered stations');
     data['fuelTypeId'] = filterConfig.fuelTypeId;
     debugPrint('data[\'fuelTypeId\'] ${data['fuelTypeId']} ${data['fuelTypeId'].runtimeType}');
-    orderedStations = kIsWeb ? _getOrderedStations(data) : await compute(_getOrderedStations, data);
+    orderedStations = !kIsWeb ? _getOrderedStations(data) : await compute(_getOrderedStations, data);
     debugPrint('Ordered stations ${orderedStations.length}');
     return orderedStations;
   }
@@ -142,22 +142,23 @@ abstract class MinGOData {
     }
   }
 
-  static bool isWithinRadius(Station station) {
-    return selectedDistance == null ||
+  static bool isWithinRadius(Station station, [bool openStations = false]) {
+    return selectedDistance == null && !openStations ||
         LocationServices.getDistance(
               double.parse(station.lat!),
               double.parse(station.lng!),
               MinGOData.mapFocusLocation.latitude,
               MinGOData.mapFocusLocation.longitude,
             ) <
-            ((selectedDistance != null ? selectedDistance! / 2 : null) ?? 50);
+            ((selectedDistance != null ? selectedDistance! : null) ?? 50);
   }
 
   static List<Station> _getStationsInRadius(List<Station> stations) {
     return stations.where((e) => isWithinRadius(e)).toList();
   }
 
-  static List<Station> get getOpenStations => stations.where((e) => StationUtil.isOpen(e) && e.priceList.length > 2).toList();
+  static List<Station> get getOpenStations =>
+      stations.where((e) => StationUtil.isOpen(e) && isWithinRadius(e, true) && e.priceList.length > 2).toList();
   static late List<Station> openStations;
 
   static Future<List<Station>> getStationsInRadius() async {

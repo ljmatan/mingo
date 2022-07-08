@@ -127,6 +127,8 @@ class Price {
       id: json['id'],
     );
   }
+
+  double get priceInEur => price! / 7.5345;
 }
 
 class StationOption {
