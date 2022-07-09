@@ -62,13 +62,13 @@ class _ProvidersSearchPageState extends State<ProvidersSearchPage> with WidgetsB
 
   void _fitProviderBounds() {
     if (MinGOData.selectedProvidersStations.isNotEmpty) {
-      _mapKey.currentState!.fitBounds(
+      _mapKey.currentState!.mapController.fitBounds(
         StationUtil.boundsFromLatLngList(
           [
             for (var station in MinGOData.selectedProvidersStations)
               LatLng(
-                double.parse(station.lng!),
                 double.parse(station.lat!),
+                double.parse(station.lng!),
               ),
           ],
         ),
@@ -278,8 +278,8 @@ class _ProvidersSearchPageState extends State<ProvidersSearchPage> with WidgetsB
                                                                   ? MinGOData.selectedProviders.remove(provider.id)
                                                                   : MinGOData.selectedProviders.add(provider.id);
                                                               setState(() {});
-                                                              _fitProviderBounds();
                                                               _textInputFocusNode.requestFocus();
+                                                              _fitProviderBounds();
                                                             },
                                                           ),
                                                         ),

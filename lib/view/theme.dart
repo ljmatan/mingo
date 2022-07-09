@@ -1,5 +1,7 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:mingo/services/device_info/device_info.dart';
 
 /// Global theme parameters
 abstract class MinGOTheme {
@@ -18,6 +20,7 @@ abstract class MinGOTheme {
   static double get screenWidth => WidgetsBinding.instance.window.physicalSize.width / WidgetsBinding.instance.window.devicePixelRatio;
 
   static final data = ThemeData(
+    useMaterial3: !kIsWeb && DeviceInfo.androidApiVersion != null && DeviceInfo.androidApiVersion! > 30,
     scaffoldBackgroundColor: _primaryColor,
     primaryColor: _primaryColor,
     fontFamily: 'Inter',

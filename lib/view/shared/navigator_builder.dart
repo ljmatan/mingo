@@ -32,7 +32,7 @@ class _NavigatorBuilderState extends State<NavigatorBuilder> {
       ),
       child: AnnotatedRegion<SystemUiOverlayStyle>(
         value: Theme.of(context).appBarTheme.systemOverlayStyle!,
-        child: !kIsWeb && Platform.isAndroid && (DeviceInfo.androidApiVersion == null || DeviceInfo.androidApiVersion! < 32)
+        child: !kIsWeb && Platform.isAndroid && (DeviceInfo.androidApiVersion == null || DeviceInfo.androidApiVersion! < 31)
             ? ScrollConfiguration(
                 behavior: OverscrollRemovedScrolLBehavior(),
                 child: widget.child,

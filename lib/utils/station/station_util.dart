@@ -75,20 +75,20 @@ abstract class StationUtil {
   }
 
   static LatLngBounds boundsFromLatLngList(List<LatLng> points) {
-    double? x0, x1, y0, y1;
+    late double x0, x1, y0, y1;
 
-    for (var point in points) {
-      if (x0 == null) {
-        x0 = x1 = point.latitude;
-        y0 = y1 = point.longitude;
+    for (int i = 0; i < points.length; i++) {
+      if (i == 0) {
+        x0 = x1 = points[i].latitude;
+        y0 = y1 = points[i].longitude;
       } else {
-        if (point.latitude > x1!) x1 = point.latitude;
-        if (point.latitude < x0) x0 = point.latitude;
-        if (point.longitude > y1!) y1 = point.longitude;
-        if (point.longitude < y0!) y0 = point.longitude;
+        if (points[i].latitude > x1) x1 = points[i].latitude;
+        if (points[i].latitude < x0) x0 = points[i].latitude;
+        if (points[i].longitude > y1) y1 = points[i].longitude;
+        if (points[i].longitude < y0) y0 = points[i].longitude;
       }
     }
 
-    return LatLngBounds(LatLng(x1!, y1!), LatLng(x0!, y0!));
+    return LatLngBounds(LatLng(x1, y1), LatLng(x0, y0));
   }
 }

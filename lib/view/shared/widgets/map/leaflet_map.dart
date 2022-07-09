@@ -143,10 +143,6 @@ class LeafletMapState extends State<LeafletMap> with TickerProviderStateMixin, A
     _animationController!.forward();
   }
 
-  Future<void> fitBounds(LatLngBounds bounds) async {
-    mapController.fitBounds(bounds);
-  }
-
   List<Station>? get _orderedStations {
     try {
       final ordered = MinGOData.orderedStations
@@ -191,8 +187,8 @@ class LeafletMapState extends State<LeafletMap> with TickerProviderStateMixin, A
                 options: MapOptions(
                   controller: mapController,
                   zoom: widget.station != null ? 16 : 11.5,
-                  minZoom: _lockedZoom ?? (MediaQuery.of(context).size.width < 1000 ? 10 : 8),
-                  maxZoom: _lockedZoom ?? 18,
+                  minZoom: _lockedZoom,
+                  maxZoom: _lockedZoom,
                   center: widget.station != null
                       ? LatLng(
                           double.parse(widget.station!.lat!),
@@ -202,7 +198,6 @@ class LeafletMapState extends State<LeafletMap> with TickerProviderStateMixin, A
                           LocationServices.locationData?.latitude ?? MinGOData.mapFocusLocation.latitude,
                           LocationServices.locationData?.longitude ?? MinGOData.mapFocusLocation.longitude,
                         ),
-                  maxBounds: _bounds,
                   onPositionChanged: (position, _) {
                     if (widget.station == null &&
                         !widget.providersSearch &&
