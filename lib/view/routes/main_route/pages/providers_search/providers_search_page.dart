@@ -4,9 +4,11 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:mingo/data/mingo.dart';
 import 'package:mingo/services/location/location.dart';
+import 'package:mingo/utils/station/station_util.dart';
 import 'package:mingo/view/shared/widgets/footer/footer.dart';
 import 'package:mingo/view/shared/widgets/map/leaflet_map.dart';
 import 'package:mingo/view/shared/widgets/newsletter_subscription/newsletter_subscription_field.dart';
+import 'package:latlong2/latlong.dart';
 
 class ProvidersSearchPage extends StatefulWidget {
   const ProvidersSearchPage({super.key});
@@ -57,6 +59,24 @@ class _ProvidersSearchPageState extends State<ProvidersSearchPage> with WidgetsB
 
   bool _scrollEnabled = true;
   void _enableScroll(bool enabled) => setState(() => _scrollEnabled = enabled);
+
+  void _fitProviderBounds() {
+    if (MinGOData.selectedProvidersStations.isNotEmpty) {
+      _mapKey.currentState!.fitBounds(
+        StationUtil.boundsFromLatLngList(
+          [
+            for (var station in MinGOData.selectedProvidersStations)
+              LatLng(
+                double.parse(station.lng!),
+                double.parse(station.lat!),
+              ),
+          ],
+        ),
+      );
+    } else {
+      _mapKey.currentState!.move(lat: 45.8150, lng: 15.9819);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -258,6 +278,7 @@ class _ProvidersSearchPageState extends State<ProvidersSearchPage> with WidgetsB
                                                                   ? MinGOData.selectedProviders.remove(provider.id)
                                                                   : MinGOData.selectedProviders.add(provider.id);
                                                               setState(() {});
+                                                              _fitProviderBounds();
                                                               _textInputFocusNode.requestFocus();
                                                             },
                                                           ),
@@ -302,6 +323,7 @@ class _ProvidersSearchPageState extends State<ProvidersSearchPage> with WidgetsB
                                               onPressed: () {
                                                 MinGOData.selectedProviders.clear();
                                                 setState(() {});
+                                                _fitProviderBounds();
                                               },
                                             ),
                                           if (MinGOData.selectedProviders.isNotEmpty)
@@ -347,6 +369,7 @@ class _ProvidersSearchPageState extends State<ProvidersSearchPage> with WidgetsB
                                     onPressed: () {
                                       MinGOData.selectedProviders.remove(providerId);
                                       setState(() {});
+                                      _fitProviderBounds();
                                     },
                                   ),
                                 ),
@@ -455,6 +478,7 @@ class _ProvidersSearchPageState extends State<ProvidersSearchPage> with WidgetsB
                                                                               ? MinGOData.selectedProviders.remove(provider.id)
                                                                               : MinGOData.selectedProviders.add(provider.id);
                                                                           setState(() {});
+                                                                          _fitProviderBounds();
                                                                           _textInputFocusNode.requestFocus();
                                                                         },
                                                                       ),
@@ -499,6 +523,7 @@ class _ProvidersSearchPageState extends State<ProvidersSearchPage> with WidgetsB
                                                           onPressed: () {
                                                             MinGOData.selectedProviders.clear();
                                                             setState(() {});
+                                                            _fitProviderBounds();
                                                           },
                                                         ),
                                                       if (MinGOData.selectedProviders.isNotEmpty)
@@ -544,6 +569,7 @@ class _ProvidersSearchPageState extends State<ProvidersSearchPage> with WidgetsB
                                                 onPressed: () {
                                                   MinGOData.selectedProviders.remove(providerId);
                                                   setState(() {});
+                                                  _fitProviderBounds();
                                                 },
                                               ),
                                             ),

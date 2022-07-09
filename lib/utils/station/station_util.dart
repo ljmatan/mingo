@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart' show Color;
+import 'package:flutter_map/flutter_map.dart';
 import 'package:mingo/models/app_data.dart';
+import 'package:latlong2/latlong.dart';
 
 extension DateOnlyCompare on DateTime {
   bool isSameDate(DateTime other) {
@@ -70,5 +72,23 @@ abstract class StationUtil {
 
   static Color timeColor(Station station) {
     return isOpen(station) ? const Color(0xffB7FFEB) : const Color(0xffFFB3A9);
+  }
+
+  static LatLngBounds boundsFromLatLngList(List<LatLng> points) {
+    double? x0, x1, y0, y1;
+
+    for (var point in points) {
+      if (x0 == null) {
+        x0 = x1 = point.latitude;
+        y0 = y1 = point.longitude;
+      } else {
+        if (point.latitude > x1!) x1 = point.latitude;
+        if (point.latitude < x0) x0 = point.latitude;
+        if (point.longitude > y1!) y1 = point.longitude;
+        if (point.longitude < y0!) y0 = point.longitude;
+      }
+    }
+
+    return LatLngBounds(LatLng(x1!, y1!), LatLng(x0!, y0!));
   }
 }

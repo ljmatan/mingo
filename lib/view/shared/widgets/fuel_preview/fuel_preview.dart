@@ -12,6 +12,48 @@ class FuelPreview extends StatelessWidget {
     this.minAxisSize = false,
   });
 
+  int _fuelTypeId(int fuelId) {
+    try {
+      return MinGOData.instance.fuelTypes
+          .firstWhere((e) => e.id == MinGOData.instance.fuels.firstWhere((e) => e.id == fuelId).fuelKindId)
+          .fuelKindId;
+    } catch (e) {
+      return 5;
+    }
+  }
+
+  Color _fuelColor(int fuelId) {
+    final int fuelTypeId = _fuelTypeId(fuelId);
+    switch (fuelTypeId) {
+      case 1:
+        return const Color(0xff8DD374);
+      case 2:
+        return const Color(0xff2C313C);
+      case 3:
+        return const Color(0xffFAC02D);
+      case 4:
+        return const Color(0xff701D46);
+      default:
+        return Colors.grey;
+    }
+  }
+
+  String _fuelMarking(int fuelId) {
+    final int fuelTypeId = _fuelTypeId(fuelId);
+    switch (fuelTypeId) {
+      case 1:
+        return 'E';
+      case 2:
+        return 'B';
+      case 3:
+        return 'H';
+      case 4:
+        return 'L';
+      default:
+        return 'N';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return DecoratedBox(
@@ -35,7 +77,11 @@ class FuelPreview extends StatelessWidget {
               padding: const EdgeInsets.only(right: 8),
               child: CircleAvatar(
                 radius: 19,
-                backgroundColor: Colors.green,
+                backgroundColor: _fuelColor(price.fuelId),
+                child: Text(
+                  _fuelMarking(price.fuelId),
+                  style: const TextStyle(color: Colors.white),
+                ),
               ),
             ),
             Column(

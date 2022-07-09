@@ -143,6 +143,10 @@ class LeafletMapState extends State<LeafletMap> with TickerProviderStateMixin, A
     _animationController!.forward();
   }
 
+  Future<void> fitBounds(LatLngBounds bounds) async {
+    mapController.fitBounds(bounds);
+  }
+
   List<Station>? get _orderedStations {
     try {
       final ordered = MinGOData.orderedStations

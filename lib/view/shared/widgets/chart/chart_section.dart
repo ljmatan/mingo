@@ -6,6 +6,82 @@ import 'package:mingo/view/routes/main_route/pages/dashboard/elements/search_fie
 import 'package:mingo/view/shared/widgets/title/title.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
 
+class _PriceInfo extends StatefulWidget {
+  final int index;
+
+  const _PriceInfo(this.index);
+
+  @override
+  State<_PriceInfo> createState() => _PriceInfoState();
+}
+
+class _PriceInfoState extends State<_PriceInfo> {
+  late double priceInHrk, priceInEur;
+
+  @override
+  void initState() {
+    super.initState();
+    priceInHrk = MinGOData.priceTrends
+        .where(
+          (e) => e.fuelId == FuelTrendsChartSection.fuelIds.elementAt(widget.index),
+        )
+        .last
+        .price;
+    priceInEur = priceInHrk / 7.5345;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(20, 0, 20, 8),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(right: 10),
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(4),
+                color: Color(
+                  int.parse(
+                    FuelTrendsChartSection.chartColors.elementAt(widget.index).hexString.replaceAll('#', '0xff'),
+                  ),
+                ),
+              ),
+              child: const SizedBox(width: 14, height: 14),
+            ),
+          ),
+          Flexible(
+            child: Text.rich(
+              TextSpan(
+                children: [
+                  TextSpan(
+                    text: DashboardPageSearchField.fuelKinds[widget.index],
+                    style: Theme.of(context).textTheme.bodyText2!.copyWith(color: Colors.grey),
+                  ),
+                  TextSpan(
+                    text: (DateTime.now().year > 2023
+                            ? priceInEur.toStringAsFixed(2) +
+                                ' EUR / L' +
+                                (DateTime.now().year < 2023 || DateTime.now().year == 2023 && DateTime.now().month < 6 ? '  •  ' : '')
+                            : '') +
+                        (DateTime.now().year < 2023 || DateTime.now().year == 2023 && DateTime.now().month < 6
+                            ? '  ' + priceInHrk.toString() + ' HRK / L'
+                            : '') +
+                        (DateTime.now().year < 2023 ? '  •  ' + priceInEur.toStringAsFixed(2) + ' EUR / L' : ''),
+                    style: Theme.of(context).textTheme.bodyText2!,
+                  ),
+                ],
+              ),
+              style: const TextStyle(fontSize: 18),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 class _LocalizedDateTimeFactory extends charts.LocalDateTimeFactory {
   final Locale locale;
 
@@ -25,9 +101,9 @@ class FuelTrendsChartSection extends StatelessWidget {
     this.seriesList,
   });
 
-  static const _fuelIds = {1, 2, 3, 4};
+  static const fuelIds = {1, 2, 3, 4};
 
-  static final List<charts.Color> _colors = [
+  static final List<charts.Color> chartColors = [
     charts.MaterialPalette.blue.shadeDefault,
     charts.MaterialPalette.yellow.shadeDefault,
     charts.MaterialPalette.red.shadeDefault,
@@ -42,15 +118,15 @@ class FuelTrendsChartSection extends StatelessWidget {
   ];
 
   static final List<charts.Series<PriceTrendModel, DateTime>> _seriesList = [
-    for (int i = 0; i < _fuelIds.length; i++)
+    for (int i = 0; i < fuelIds.length; i++)
       charts.Series<PriceTrendModel, DateTime>(
         id: 'Trends',
-        colorFn: (_, __) => _colors[i],
+        colorFn: (_, __) => chartColors[i],
         domainFn: (PriceTrendModel gas, _) => gas.lastUpdated,
         measureFn: (PriceTrendModel gas, _) => gas.price,
         data: MinGOData.priceTrends
             .where(
-              (e) => e.fuelId == _fuelIds.elementAt(i),
+              (e) => e.fuelId == fuelIds.elementAt(i),
             )
             .toList(),
       ),
@@ -82,7 +158,7 @@ class FuelTrendsChartSection extends StatelessWidget {
                 decoration: const BoxDecoration(color: Colors.white),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  crossAxisAlignment: MediaQuery.of(context).size.width < 1000 ? CrossAxisAlignment.start : CrossAxisAlignment.center,
                   children: [
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 26),
@@ -105,110 +181,7 @@ class FuelTrendsChartSection extends StatelessWidget {
                         ),
                       ),
                     ),
-                    if (MediaQuery.of(context).size.width < 1000)
-                      for (int i = 0; i < 4; i++)
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(20, 0, 20, 8),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.only(right: 10),
-                                child: DecoratedBox(
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(4),
-                                    color: Color(
-                                      int.parse(
-                                        _colors.elementAt(i).hexString.replaceAll('#', '0xff'),
-                                      ),
-                                    ),
-                                  ),
-                                  child: const SizedBox(width: 14, height: 14),
-                                ),
-                              ),
-                              Flexible(
-                                child: Text.rich(
-                                  TextSpan(
-                                    children: [
-                                      TextSpan(
-                                        text: DashboardPageSearchField.fuelKinds[i],
-                                        style: Theme.of(context).textTheme.bodyText2!.copyWith(color: Colors.grey),
-                                      ),
-                                      TextSpan(
-                                        text: '  ' +
-                                            MinGOData.priceTrends
-                                                .where(
-                                                  (e) => e.fuelId == _fuelIds.elementAt(i),
-                                                )
-                                                .last
-                                                .price
-                                                .toString() +
-                                            ' HRK / L',
-                                        style: Theme.of(context).textTheme.bodyText2!,
-                                      ),
-                                    ],
-                                  ),
-                                  style: const TextStyle(fontSize: 18),
-                                ),
-                              ),
-                            ],
-                          ),
-                        )
-                    else
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          for (int i = 0; i < 4; i++)
-                            Padding(
-                              padding: const EdgeInsets.fromLTRB(20, 0, 20, 8),
-                              child: Column(
-                                children: [
-                                  Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.only(right: 10),
-                                        child: DecoratedBox(
-                                          decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.circular(4),
-                                            color: Color(
-                                              int.parse(
-                                                _colors.elementAt(i).hexString.replaceAll('#', '0xff'),
-                                              ),
-                                            ),
-                                          ),
-                                          child: const SizedBox(width: 14, height: 14),
-                                        ),
-                                      ),
-                                      Flexible(
-                                        child: Text(
-                                          DashboardPageSearchField.fuelKinds[i],
-                                          style: const TextStyle(fontSize: 18),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(top: 6),
-                                    child: Text(
-                                      MinGOData.priceTrends
-                                              .where(
-                                                (e) => e.fuelId == _fuelIds.elementAt(i),
-                                              )
-                                              .last
-                                              .price
-                                              .toString() +
-                                          ' HRK / L',
-                                      style: const TextStyle(
-                                        fontSize: 10,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                        ],
-                      ),
+                    for (int i = 0; i < 4; i++) _PriceInfo(i),
                     const SizedBox(height: 8),
                   ],
                 ),
