@@ -26,7 +26,7 @@ class ProvidersPagePriceSection extends StatelessWidget {
                   ? const EdgeInsets.only(top: 24, bottom: 20)
                   : const EdgeInsets.symmetric(horizontal: 10),
               child: const MinGOTitle(
-                label: 'Cijene postaje',
+                label: 'Cijene goriva',
                 subtitle: '',
                 iconFilename: 'vectors/provider_page/pig_illustration.svg',
                 lineColor: Colors.white,

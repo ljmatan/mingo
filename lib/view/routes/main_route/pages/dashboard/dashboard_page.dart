@@ -184,7 +184,7 @@ class _DashboardPageState extends State<DashboardPage> {
                                   padding: const EdgeInsets.only(top: 30),
                                   child: Center(
                                     child: MinGOActionButton(
-                                      label: 'Prikaži sve',
+                                      label: 'Prikaži više',
                                       icon: Icons.chevron_right,
                                       minWidth: true,
                                       onTap: () => MainRoutePageController.navigateTo(1),
