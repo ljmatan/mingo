@@ -65,6 +65,16 @@ class Footer extends StatelessWidget {
                           ),
                         )
                       : const SizedBox(height: 16),
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 12),
+                    child: ConstrainedBox(
+                      constraints: const BoxConstraints(maxWidth: 300),
+                      child: SvgPicture.asset(
+                        'assets/vectors/footer/ev_banner.svg',
+                        width: MediaQuery.of(context).size.width,
+                      ),
+                    ),
+                  ),
                   MinGOActionButton(
                     label: 'Kontaktirajte nas',
                     icon: Icons.chevron_right,
@@ -128,41 +138,53 @@ class Footer extends StatelessWidget {
                         ),
                     ],
                   ),
-                  InkWell(
-                    child: DecoratedBox(
-                      decoration: BoxDecoration(
-                        gradient: MinGOTheme.buttonGradient,
-                        borderRadius: BorderRadius.circular(24),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16),
-                        child: SizedBox(
-                          height: 48,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: const [
-                              Text(
-                                'Kontaktirajte nas    ',
-                                style: TextStyle(
-                                  fontWeight: FontWeight.w600,
-                                  color: Colors.white,
-                                ),
-                              ),
-                              Icon(
-                                Icons.chevron_right,
-                                color: Colors.white,
-                              ),
-                            ],
-                          ),
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(right: 14),
+                        child: SvgPicture.asset(
+                          'assets/vectors/footer/ev_banner.svg',
+                          height: 60,
                         ),
                       ),
-                    ),
-                    onTap: () => showDialog(
-                      context: context,
-                      useSafeArea: false,
-                      barrierColor: Colors.transparent,
-                      builder: (context) => const ContactDialog(),
-                    ),
+                      InkWell(
+                        child: DecoratedBox(
+                          decoration: BoxDecoration(
+                            gradient: MinGOTheme.buttonGradient,
+                            borderRadius: BorderRadius.circular(24),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 16),
+                            child: SizedBox(
+                              height: 48,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: const [
+                                  Text(
+                                    'Kontaktirajte nas    ',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w600,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                  Icon(
+                                    Icons.chevron_right,
+                                    color: Colors.white,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                        onTap: () => showDialog(
+                          context: context,
+                          useSafeArea: false,
+                          barrierColor: Colors.transparent,
+                          builder: (context) => const ContactDialog(),
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),

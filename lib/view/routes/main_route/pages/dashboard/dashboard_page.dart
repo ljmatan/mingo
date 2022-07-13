@@ -100,11 +100,22 @@ class _DashboardPageState extends State<DashboardPage> {
                                 padding: const EdgeInsets.symmetric(vertical: 20),
                                 child: Column(
                                   children: [
-                                    for (int i = 3; i < ((openStations.data!.length - 3) < 6 ? (openStations.data!.length - 3) : 6); i++)
+                                    for (int i = 0; i < openStations.data!.length; i++)
                                       Padding(
                                         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
                                         child: DashboardPageLargeStationPreview(openStations.data![i]),
                                       ),
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 16),
+                                      child: Center(
+                                        child: MinGOActionButton(
+                                          label: 'Prikaži više',
+                                          icon: Icons.chevron_right,
+                                          minWidth: true,
+                                          onTap: () => MainRoutePageController.navigateTo(1),
+                                        ),
+                                      ),
+                                    ),
                                   ],
                                 ),
                               ),

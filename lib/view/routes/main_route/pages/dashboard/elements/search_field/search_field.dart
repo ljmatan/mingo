@@ -175,6 +175,7 @@ class DashboardPageSearchFieldState extends State<DashboardPageSearchField> {
                                       case 2:
                                       case 3:
                                       case 4:
+                                        MinGOData.mapReferencePoint = widget.mapKey.currentState!.mapController.center;
                                         MinGOData.setDistance(MinGOData.filterConfig.distanceId == value ? null : value);
                                         break;
                                       default:
@@ -186,7 +187,8 @@ class DashboardPageSearchFieldState extends State<DashboardPageSearchField> {
                               const SizedBox(width: 10),
                               Expanded(
                                 child: MinGOActionButton(
-                                  label: DashboardPageSearchField.filterButtonLabels.elementAt(2),
+                                  label: DashboardPageSearchField.filterButtonLabels.elementAt(2) +
+                                      (MinGOData.appliedFilters == null ? '' : ' (${MinGOData.appliedFilters})'),
                                   icon: Icons.percent,
                                   underlined: true,
                                   iconSize: 20,
@@ -290,6 +292,7 @@ class DashboardPageSearchFieldState extends State<DashboardPageSearchField> {
                                                     case 2:
                                                     case 3:
                                                     case 4:
+                                                      MinGOData.mapReferencePoint = widget.mapKey.currentState!.mapController.center;
                                                       MinGOData.setDistance(MinGOData.filterConfig.distanceId == value ? null : value);
                                                       break;
                                                     default:
@@ -301,7 +304,8 @@ class DashboardPageSearchFieldState extends State<DashboardPageSearchField> {
                                             const SizedBox(width: 10),
                                             Expanded(
                                               child: MinGOActionButton(
-                                                label: DashboardPageSearchField.filterButtonLabels.elementAt(2),
+                                                label: DashboardPageSearchField.filterButtonLabels.elementAt(2) +
+                                                    (MinGOData.appliedFilters == null ? '' : ' (${MinGOData.appliedFilters})'),
                                                 icon: Icons.percent,
                                                 iconSize: 20,
                                                 onTap: () {

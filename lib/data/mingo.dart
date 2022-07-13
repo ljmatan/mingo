@@ -150,7 +150,7 @@ abstract class MinGOData {
               MinGOData.mapFocusLocation.latitude,
               MinGOData.mapFocusLocation.longitude,
             ) <
-            (openStations ? 5 : ((selectedDistance != null ? selectedDistance! : null) ?? 50));
+            ((selectedDistance != null ? selectedDistance! : null) ?? 50);
   }
 
   static List<Station> _getStationsInRadius(List<Station> stations) {
@@ -300,4 +300,13 @@ abstract class MinGOData {
   static List<Station> get selectedProvidersStations => instance.stations.where((e) => selectedProviders.contains(e.providerId)).toList();
 
   static late List<PriceTrendModel> priceTrends;
+
+  static int? get appliedFilters {
+    final appliedLength = filteredFuelTypes.length + filteredOptions.length + filteredWorkDays.length + filteredProviders.length;
+    if (appliedLength > 0) {
+      return appliedLength;
+    } else {
+      return null;
+    }
+  }
 }
