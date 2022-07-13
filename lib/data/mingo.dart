@@ -150,7 +150,7 @@ abstract class MinGOData {
               MinGOData.mapFocusLocation.latitude,
               MinGOData.mapFocusLocation.longitude,
             ) <
-            ((selectedDistance != null ? selectedDistance! : null) ?? 50);
+            (openStations ? 5 : ((selectedDistance != null ? selectedDistance! : null) ?? 50));
   }
 
   static List<Station> _getStationsInRadius(List<Station> stations) {

@@ -208,7 +208,7 @@ class LeafletMapState extends State<LeafletMap> with TickerProviderStateMixin, A
                               MinGOData.mapFocusLocation.latitude,
                               MinGOData.mapFocusLocation.longitude,
                             ) >
-                            (MinGOData.selectedDistance ?? (MediaQuery.of(context).size.width < 1000 ? 15 : 20))) {
+                            5) {
                       MinGOData.mapReferencePoint = position.center!;
                     }
                   },

@@ -150,7 +150,11 @@ class DashboardPageSearchFieldState extends State<DashboardPageSearchField> {
                                       case 1:
                                       case 2:
                                       case 3:
-                                        MinGOData.setFuelKind(_selectedFuelKind == value ? null : value + 1);
+                                        if (_selectedFuelKind != value) {
+                                          MinGOData.setFuelKind(value + 1);
+                                        } else {
+                                          throw 'Already selected';
+                                        }
                                         break;
                                       default:
                                         throw 'Not implemented';

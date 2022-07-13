@@ -89,8 +89,6 @@ class _DashboardPageAnimatedDropdownState extends State<DashboardPageAnimatedDro
   RenderBox? _renderBox;
   Offset? _widgetOffset;
   double get _fullItemsHeight => widget.children.length * 40;
-  double get _heightCutoff => MediaQuery.of(context).size.height * .4;
-  // double get _itemsHeight => _fullItemsHeight < _heightCutoff ? _fullItemsHeight : _heightCutoff;
 
   void _getWidgetInfo() {
     _renderBox = _widgetKey.currentContext!.findRenderObject() as RenderBox;
@@ -123,7 +121,7 @@ class _DashboardPageAnimatedDropdownState extends State<DashboardPageAnimatedDro
       key: _widgetKey,
       label: _selected ?? widget.label,
       icon: Icons.arrow_drop_down,
-      underlined: true,
+      underlined: MediaQuery.of(context).size.width < 1000,
       contentBlocking: false,
       onTap: () {
         FocusScope.of(context).unfocus();
@@ -174,9 +172,13 @@ class _DashboardPageAnimatedDropdownState extends State<DashboardPageAnimatedDro
                                     width: _renderBox!.size.width,
                                     selected: widget.selectedIndex() == i,
                                     onTap: () async {
-                                      widget.onItemSelected!(i);
-                                      setState(() => _selected = _selected == widget.children[i] ? null : widget.children[i]);
-                                      Navigator.pop(context);
+                                      try {
+                                        Navigator.pop(context);
+                                        widget.onItemSelected!(i);
+                                        setState(() => _selected = _selected == widget.children[i] ? null : widget.children[i]);
+                                      } catch (e) {
+                                        // Do nothing
+                                      }
                                     },
                                   ),
                                 ),
