@@ -21,7 +21,7 @@ class _PriceInfoState extends State<_PriceInfo> {
   @override
   void initState() {
     super.initState();
-    priceInHrk = MinGOData.priceTrends
+    priceInHrk = (FuelTrendsChartSection.selectedPrices.isEmpty ? MinGOData.priceTrends : FuelTrendsChartSection.selectedPrices)
         .where(
           (e) => e.fuelId == FuelTrendsChartSection.fuelIds.elementAt(widget.index),
         )
@@ -56,7 +56,9 @@ class _PriceInfoState extends State<_PriceInfo> {
               TextSpan(
                 children: [
                   TextSpan(
-                    text: DashboardPageSearchField.fuelKinds[widget.index],
+                    text: DashboardPageSearchField.fuelKinds[FuelTrendsChartSection.selectedPrices.isEmpty
+                        ? widget.index
+                        : FuelTrendsChartSection.selectedPrices[widget.index].fuelId - 1],
                     style: Theme.of(context).textTheme.bodyText2!.copyWith(color: Colors.grey),
                   ),
                   TextSpan(
@@ -93,7 +95,9 @@ class _LocalizedDateTimeFactory extends charts.LocalDateTimeFactory {
   }
 }
 
-class FuelTrendsChartSection extends StatelessWidget {
+class FuelTrendsChartSection extends StatefulWidget {
+  static List<PriceTrendModel> selectedPrices = [];
+
   final List<charts.Series<PriceTrendModel, DateTime>>? seriesList;
 
   const FuelTrendsChartSection({
@@ -133,6 +137,11 @@ class FuelTrendsChartSection extends StatelessWidget {
   ];
 
   @override
+  State<FuelTrendsChartSection> createState() => _FuelTrendsChartSectionState();
+}
+
+class _FuelTrendsChartSectionState extends State<FuelTrendsChartSection> {
+  @override
   Widget build(BuildContext context) {
     return DecoratedBox(
       decoration: BoxDecoration(
@@ -170,18 +179,31 @@ class FuelTrendsChartSection extends StatelessWidget {
                                 : MediaQuery.of(context).size.height < 1000
                                     ? 700
                                     : 800,
-                        child: IgnorePointer(
-                          child: charts.TimeSeriesChart(
-                            seriesList ?? _seriesList,
-                            dateTimeFactory: _LocalizedDateTimeFactory(
-                              locale: Localizations.localeOf(context),
-                            ),
-                            animate: false,
+                        child: charts.TimeSeriesChart(
+                          widget.seriesList ?? FuelTrendsChartSection._seriesList,
+                          dateTimeFactory: _LocalizedDateTimeFactory(
+                            locale: Localizations.localeOf(context),
                           ),
+                          animate: false,
+                          selectionModels: [
+                            charts.SelectionModelConfig(
+                              changedListener: (model) {
+                                FuelTrendsChartSection.selectedPrices = [];
+                                for (var selection in model.selectedDatum) {
+                                  print(selection.datum.price);
+                                  FuelTrendsChartSection.selectedPrices.add(selection.datum);
+                                }
+                                setState(() {});
+                              },
+                            ),
+                          ],
                         ),
                       ),
                     ),
-                    for (int i = 0; i < 4; i++) _PriceInfo(i),
+                    for (int i = 0;
+                        i < (FuelTrendsChartSection.selectedPrices.isEmpty ? 4 : FuelTrendsChartSection.selectedPrices.length);
+                        i++)
+                      _PriceInfo(i),
                     const SizedBox(height: 8),
                   ],
                 ),

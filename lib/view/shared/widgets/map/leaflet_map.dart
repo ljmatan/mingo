@@ -9,6 +9,7 @@ import 'package:mingo/data/mingo.dart';
 import 'package:mingo/models/app_data.dart';
 import 'package:mingo/services/location/location.dart';
 import 'package:mingo/utils/station/station_util.dart';
+import 'package:mingo/view/routes/main_route/pages/dashboard/bloc/open_stations_controller.dart';
 import 'package:mingo/view/routes/provider_details/provider_details_route.dart';
 import 'package:mingo/view/shared/basic/action_button.dart';
 import 'package:mingo/view/shared/bloc/map_markers_controller.dart';
@@ -157,6 +158,8 @@ class LeafletMapState extends State<LeafletMap> with TickerProviderStateMixin, A
                 true,
           )
           .toList();
+      MinGOData.orderedStations = ordered;
+      DashboardPageOpenStationsController.update(ordered);
       return ordered.sublist(0, ordered.length < 4 ? ordered.length : 4);
     } catch (e) {
       return null;
@@ -208,7 +211,7 @@ class LeafletMapState extends State<LeafletMap> with TickerProviderStateMixin, A
                               MinGOData.mapFocusLocation.latitude,
                               MinGOData.mapFocusLocation.longitude,
                             ) >
-                            (MinGOData.selectedDistance ?? (MediaQuery.of(context).size.width < 1000 ? 15 : 20))) {
+                            (MinGOData.selectedDistance ?? (MediaQuery.of(context).size.width < 1000 ? 5 : 10))) {
                       MinGOData.mapReferencePoint = position.center!;
                     }
                   },

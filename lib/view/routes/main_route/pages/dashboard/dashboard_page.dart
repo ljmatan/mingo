@@ -4,6 +4,7 @@ import 'package:mingo/models/app_data.dart';
 import 'package:mingo/services/location/location.dart';
 import 'package:mingo/view/routes/main_route/bloc/page_controller.dart';
 import 'package:mingo/view/routes/main_route/pages/dashboard/bloc/open_stations_controller.dart';
+import 'package:mingo/view/routes/main_route/pages/dashboard/elements/open_stations/open_stations.dart';
 import 'package:mingo/view/shared/widgets/chart/chart_section.dart';
 import 'package:mingo/view/routes/main_route/pages/dashboard/elements/large_station_preview/large_station_preview.dart';
 import 'package:mingo/view/shared/basic/action_button.dart';
@@ -73,59 +74,7 @@ class _DashboardPageState extends State<DashboardPage> {
                     mapKey: _mapKey,
                     enableScroll: _enableScroll,
                   ),
-                  StreamBuilder<List<Station>>(
-                    stream: DashboardPageOpenStationsController.stream,
-                    initialData: MinGOData.openStations,
-                    builder: (context, openStations) {
-                      if (MinGOData.openStations.length - 3 > 0) {
-                        return Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            const DecoratedBox(
-                              decoration: BoxDecoration(color: Colors.white),
-                              child: Padding(
-                                padding: EdgeInsets.symmetric(vertical: 30),
-                                child: MinGOTitle(
-                                  label: 'Otvorene postaje',
-                                  subtitle: 'Pronađite najpovoljniju benzinsku postaju',
-                                  iconFilename: 'vectors/dashboard/gas_tank_illustration.svg',
-                                ),
-                              ),
-                            ),
-                            DecoratedBox(
-                              decoration: const BoxDecoration(
-                                color: Color(0xffF9F9F9),
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(vertical: 20),
-                                child: Column(
-                                  children: [
-                                    for (int i = 0; i < openStations.data!.length; i++)
-                                      Padding(
-                                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-                                        child: DashboardPageLargeStationPreview(openStations.data![i]),
-                                      ),
-                                    Padding(
-                                      padding: const EdgeInsets.only(top: 16),
-                                      child: Center(
-                                        child: MinGOActionButton(
-                                          label: 'Prikaži više',
-                                          icon: Icons.chevron_right,
-                                          minWidth: true,
-                                          onTap: () => MainRoutePageController.navigateTo(1),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ],
-                        );
-                      }
-                      return const SizedBox();
-                    },
-                  ),
+                  const DashboardPageOpenStations(),
                   const FuelTrendsChartSection(),
                   const NewsletterSubscriptionField(),
                   const Footer(),

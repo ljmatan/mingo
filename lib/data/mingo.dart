@@ -4,8 +4,8 @@ import 'package:mingo/models/price_trend.dart';
 import 'package:mingo/services/location/location.dart';
 import 'package:mingo/utils/station/station_util.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:mingo/view/routes/main_route/pages/dashboard/bloc/open_stations_controller.dart';
 import 'package:mingo/view/shared/bloc/map_markers_controller.dart';
+import 'package:mingo/view/theme.dart';
 
 class _FilterConfig {
   int? fuelTypeId = 1, distanceId;
@@ -41,9 +41,15 @@ abstract class MinGOData {
 
   static List<Station> _getOrderedStations(Map<String, dynamic> data) {
     debugPrint('Ordering stations');
-    final fuelTypeId = data['fuelTypeId'] as int?;
+    int? fuelTypeId = data['fuelTypeId'];
     debugPrint('fuelTypeId $fuelTypeId ${fuelTypeId.runtimeType}');
-    if (fuelTypeId == null) return <Station>[];
+    if (fuelTypeId == null) {
+      return <Station>[];
+    } else if (fuelTypeId == 3) {
+      fuelTypeId = 9;
+    } else if (fuelTypeId == 4) {
+      fuelTypeId = 10;
+    }
 
     final stations = List<Station>.from(data['stations']);
     debugPrint('stations $stations ${stations.runtimeType}');
@@ -95,7 +101,7 @@ abstract class MinGOData {
     final stations = List<Station>.from(data['stations']);
     final fuels = List<Fuel>.from(data['fuels']);
     return {
-      for (var fuelKindId in <int>{1, 2, 3, 4})
+      for (var fuelKindId in <int>{1, 2, 9, 10})
         Set<int>.from(
           stations
               .where(
@@ -150,15 +156,14 @@ abstract class MinGOData {
               MinGOData.mapFocusLocation.latitude,
               MinGOData.mapFocusLocation.longitude,
             ) <
-            ((selectedDistance != null ? selectedDistance! : null) ?? 50);
+            (openStations ? (MinGOTheme.screenWidth < 1000 ? 5 : 10) : ((selectedDistance != null ? selectedDistance! : null) ?? 50));
   }
 
   static List<Station> _getStationsInRadius(List<Station> stations) {
     return stations.where((e) => isWithinRadius(e)).toList();
   }
 
-  static List<Station> get getOpenStations =>
-      stations.where((e) => StationUtil.isOpen(e) && isWithinRadius(e, true) && e.priceList.length > 2).toList();
+  static List<Station> get getOpenStations => orderedStations.where((e) => StationUtil.isOpen(e) && e.priceList.length > 2).toList();
   static late List<Station> openStations;
 
   static Future<List<Station>> getStationsInRadius() async {
@@ -271,8 +276,8 @@ abstract class MinGOData {
       'stations': stations,
       'fuels': instance.fuels,
     }).whenComplete(() {
-      openStations = getOpenStations;
-      DashboardPageOpenStationsController.update(openStations);
+      // openStations = getOpenStations;
+      // DashboardPageOpenStationsController.update(openStations);
       MapMarkersController.update(stations);
     });
   }
@@ -281,6 +286,8 @@ abstract class MinGOData {
   static set mapReferencePoint(LatLng value) {
     mapFocusLocation = value;
     getStationsInRadius().whenComplete(() {
+      // openStations = getOpenStations;
+      // DashboardPageOpenStationsController.update(openStations);
       updateFilteredMarkers();
     });
   }

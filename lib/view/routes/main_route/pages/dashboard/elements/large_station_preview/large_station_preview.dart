@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mingo/data/mingo.dart';
 import 'package:mingo/models/app_data.dart';
 import 'package:mingo/view/routes/provider_details/provider_details_route.dart';
 import 'package:mingo/view/shared/basic/action_button.dart';
@@ -6,10 +7,33 @@ import 'package:mingo/view/shared/widgets/fuel_preview/fuel_preview.dart';
 import 'package:mingo/view/shared/widgets/provider_info/provider_info.dart';
 import 'package:mingo/view/shared/widgets/work_hours_indicator/work_hours_indicator.dart';
 
-class DashboardPageLargeStationPreview extends StatelessWidget {
+class DashboardPageLargeStationPreview extends StatefulWidget {
   final Station station;
 
   const DashboardPageLargeStationPreview(this.station, {super.key});
+
+  @override
+  State<DashboardPageLargeStationPreview> createState() => _DashboardPageLargeStationPreviewState();
+}
+
+class _DashboardPageLargeStationPreviewState extends State<DashboardPageLargeStationPreview> {
+  late List<Price> prices;
+
+  @override
+  void initState() {
+    super.initState();
+    prices = widget.station.priceList
+        .where(
+          (p) =>
+              MinGOData.instance.fuels.firstWhere((f) => f.id == p.fuelId).fuelKindId == 9 && MinGOData.filterConfig.fuelTypeId == 3 ||
+              MinGOData.instance.fuels.firstWhere((f) => f.id == p.fuelId).fuelKindId == 10 && MinGOData.filterConfig.fuelTypeId == 4 ||
+              MinGOData.instance.fuels.firstWhere((f) => f.id == p.fuelId).fuelKindId == 1 && MinGOData.filterConfig.fuelTypeId == 1 ||
+              MinGOData.instance.fuels.firstWhere((f) => f.id == p.fuelId).fuelKindId == 2 && MinGOData.filterConfig.fuelTypeId == 1 ||
+              MinGOData.instance.fuels.firstWhere((f) => f.id == p.fuelId).fuelKindId == 7 && MinGOData.filterConfig.fuelTypeId == 2 ||
+              MinGOData.instance.fuels.firstWhere((f) => f.id == p.fuelId).fuelKindId == 8 && MinGOData.filterConfig.fuelTypeId == 2,
+        )
+        .toList();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -44,13 +68,13 @@ class DashboardPageLargeStationPreview extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            station.place,
+                            widget.station.place,
                             style: const TextStyle(
                               fontSize: 18,
                             ),
                           ),
                           Text(
-                            station.name,
+                            widget.station.name,
                             style: const TextStyle(
                               fontWeight: FontWeight.w600,
                               fontSize: 18,
@@ -59,15 +83,15 @@ class DashboardPageLargeStationPreview extends StatelessWidget {
                         ],
                       ),
                     ),
-                    WorkHoursIndicator(station),
+                    WorkHoursIndicator(widget.station),
                   ],
                 ),
                 const SizedBox(height: 10),
-                ProviderInfo(station),
-                for (int i = 0; i < 2; i++)
+                ProviderInfo(widget.station),
+                for (int i = 0; i < prices.length; i++)
                   Padding(
                     padding: i == 0 ? const EdgeInsets.only(top: 12) : const EdgeInsets.only(top: 6),
-                    child: FuelPreview(station.priceList[i]),
+                    child: FuelPreview(prices[i]),
                   ),
                 if (MediaQuery.of(context).size.width < 1000)
                   const Padding(
@@ -88,7 +112,7 @@ class DashboardPageLargeStationPreview extends StatelessWidget {
         ),
         onTap: () => Navigator.of(context).push(
           MaterialPageRoute<void>(
-            builder: (BuildContext context) => ProviderDetailsRoute(station),
+            builder: (BuildContext context) => ProviderDetailsRoute(widget.station),
           ),
         ),
       ),

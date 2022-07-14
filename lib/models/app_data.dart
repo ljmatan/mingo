@@ -162,15 +162,10 @@ class Fuel {
   });
 
   factory Fuel.fromJson(Map<String, dynamic> json) {
-    final fuelKindId = json['vrsta_goriva_id'];
     return Fuel(
       id: json['id'],
       providerId: json['obveznik_id'],
-      fuelKindId: fuelKindId == 9
-          ? 2
-          : fuelKindId == 10
-              ? 3
-              : fuelKindId,
+      fuelKindId: json['vrsta_goriva_id'],
       name: json['naziv'],
       mark: json['oznaka'],
     );

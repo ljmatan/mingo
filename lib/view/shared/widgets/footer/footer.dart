@@ -122,7 +122,7 @@ class Footer extends StatelessWidget {
                               height: 44,
                             ),
                             onTap: () async {
-                              await UrlLauncher.appStore('https://play.google.com/store/apps/details?id=mzoe.gor');
+                              await UrlLauncher.appStore('https://play.google.com/store/apps/details?id=mingo.hr');
                             },
                           ),
                         ),
