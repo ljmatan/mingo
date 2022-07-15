@@ -336,7 +336,9 @@ class _ProvidersSearchPageState extends State<ProvidersSearchPage> with WidgetsB
                                           IconButton(
                                             icon: const Icon(Icons.arrow_drop_down),
                                             onPressed: () {
-                                              _textInputFocusNode.requestFocus();
+                                              _textInputFocusNode.hasFocus
+                                                  ? FocusScope.of(context).unfocus()
+                                                  : _textInputFocusNode.requestFocus();
                                             },
                                           ),
                                         ],

@@ -46,56 +46,60 @@ class MainRoute extends StatelessWidget {
         ],
       ),
       endDrawer: MediaQuery.of(context).size.width < 1000
-          ? Drawer(
-              backgroundColor: Theme.of(context).primaryColor,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  for (int i = 0; i < MinGONavigationBar.pageLabels.length; i++)
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 12),
-                      child: TextButton(
-                        child: Builder(
-                          builder: (context) {
-                            return StreamBuilder(
-                              stream: MainRoutePageController.stream,
-                              initialData: MainRoutePageController.currentPage,
-                              builder: (context, page) {
-                                return Padding(
-                                  padding: const EdgeInsets.only(right: 12),
-                                  child: Text(
-                                    MinGONavigationBar.pageLabels.elementAt(i),
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.w600,
-                                      color: Colors.white,
-                                      fontSize: 18,
-                                      decoration: page.data == i ? TextDecoration.underline : null,
-                                    ),
-                                  ),
+          ? Builder(
+              builder: (context) {
+                return Drawer(
+                  backgroundColor: Theme.of(context).primaryColor,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      for (int i = 0; i < MinGONavigationBar.pageLabels.length; i++)
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 12),
+                          child: TextButton(
+                            child: Builder(
+                              builder: (context) {
+                                return StreamBuilder(
+                                  stream: MainRoutePageController.stream,
+                                  initialData: MainRoutePageController.currentPage,
+                                  builder: (context, page) {
+                                    return Padding(
+                                      padding: const EdgeInsets.only(right: 12),
+                                      child: Text(
+                                        MinGONavigationBar.pageLabels.elementAt(i),
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.w600,
+                                          color: Colors.white,
+                                          fontSize: 18,
+                                          decoration: page.data == i ? TextDecoration.underline : null,
+                                        ),
+                                      ),
+                                    );
+                                  },
                                 );
                               },
-                            );
-                          },
+                            ),
+                            onPressed: () {
+                              if (i == 5) {
+                                Navigator.pop(context);
+                                showDialog(
+                                  context: context,
+                                  useSafeArea: false,
+                                  barrierColor: Colors.transparent,
+                                  builder: (context) => const ErrorReportDialog(),
+                                );
+                              } else {
+                                Navigator.pop(context);
+                                MainRoutePageController.navigateTo(i);
+                              }
+                            },
+                          ),
                         ),
-                        onPressed: () {
-                          if (i == 5) {
-                            Navigator.pop(context);
-                            showDialog(
-                              context: context,
-                              useSafeArea: false,
-                              barrierColor: Colors.transparent,
-                              builder: (context) => const ErrorReportDialog(),
-                            );
-                          } else {
-                            Navigator.pop(context);
-                            MainRoutePageController.navigateTo(i);
-                          }
-                        },
-                      ),
-                    ),
-                ],
-              ),
+                    ],
+                  ),
+                );
+              },
             )
           : null,
     );

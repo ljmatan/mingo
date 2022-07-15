@@ -151,6 +151,7 @@ class DashboardPageSearchFieldState extends State<DashboardPageSearchField> {
                                       case 2:
                                       case 3:
                                         if (_selectedFuelKind != value) {
+                                          MinGOData.mapReferencePoint = widget.mapKey.currentState!.mapController.center;
                                           MinGOData.setFuelKind(value + 1);
                                         } else {
                                           throw 'Already selected';
@@ -271,6 +272,7 @@ class DashboardPageSearchFieldState extends State<DashboardPageSearchField> {
                                                     case 1:
                                                     case 2:
                                                     case 3:
+                                                      MinGOData.mapReferencePoint = widget.mapKey.currentState!.mapController.center;
                                                       MinGOData.setFuelKind(_selectedFuelKind == value ? null : value + 1);
                                                       break;
                                                     default:

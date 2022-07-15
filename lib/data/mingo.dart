@@ -59,9 +59,24 @@ abstract class MinGOData {
     final orderedList = <Map>[];
 
     for (var station in stations) {
-      final prices = station.priceList.where(
-        (price) => fuels.where((fuel) => fuel.id == price.fuelId && fuel.fuelKindId == fuelTypeId).isNotEmpty,
-      );
+      late Iterable<Price> prices;
+      if (fuelTypeId == 1) {
+        prices = station.priceList.where(
+          (price) => fuels
+              .where((fuel) => fuel.id == price.fuelId && fuel.fuelKindId == 1 || fuel.id == price.fuelId && fuel.fuelKindId == 2)
+              .isNotEmpty,
+        );
+      } else if (fuelTypeId == 2) {
+        prices = station.priceList.where(
+          (price) => fuels
+              .where((fuel) => fuel.id == price.fuelId && fuel.fuelKindId == 7 || fuel.id == price.fuelId && fuel.fuelKindId == 8)
+              .isNotEmpty,
+        );
+      } else {
+        prices = station.priceList.where(
+          (price) => fuels.where((fuel) => fuel.id == price.fuelId && fuel.fuelKindId == fuelTypeId).isNotEmpty,
+        );
+      }
       if (prices.isEmpty) continue;
       var lowestPrice = double.infinity;
       for (var price in prices) {
@@ -106,7 +121,14 @@ abstract class MinGOData {
           stations
               .where(
                 (station) => station.priceList
-                    .where((price) => fuels.firstWhere((fuel) => fuel.id == price.fuelId).fuelKindId == fuelKindId)
+                    .where(
+                      (price) =>
+                          fuelKindId == 1 && fuels.firstWhere((fuel) => fuel.id == price.fuelId).fuelKindId == 1 ||
+                          fuelKindId == 1 && fuels.firstWhere((fuel) => fuel.id == price.fuelId).fuelKindId == 2 ||
+                          fuelKindId == 2 && fuels.firstWhere((fuel) => fuel.id == price.fuelId).fuelKindId == 7 ||
+                          fuelKindId == 2 && fuels.firstWhere((fuel) => fuel.id == price.fuelId).fuelKindId == 8 ||
+                          fuels.firstWhere((fuel) => fuel.id == price.fuelId).fuelKindId == fuelKindId,
+                    )
                     .isNotEmpty,
               )
               .map((e) => e.id),

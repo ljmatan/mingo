@@ -21,9 +21,9 @@ class _DashboardPageOpenStationsState extends State<DashboardPageOpenStations> {
   Widget build(BuildContext context) {
     return StreamBuilder<List<Station>>(
       stream: DashboardPageOpenStationsController.stream,
-      initialData: MinGOData.openStations,
+      initialData: MinGOData.orderedStations,
       builder: (context, openStations) {
-        if (MinGOData.openStations.length - 3 * _page > 0) {
+        if ((openStations.data!.length < length ? openStations.data!.length : length) > 0) {
           return Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -59,7 +59,8 @@ class _DashboardPageOpenStationsState extends State<DashboardPageOpenStations> {
                             ),
                           ),
                         ),
-                      if (MediaQuery.of(context).size.width < 1000 && _page * 3 < MinGOData.openStations.length)
+                      if (MediaQuery.of(context).size.width < 1000 &&
+                          (_page + 1) * 3 < (openStations.data!.length < length ? openStations.data!.length : length))
                         Padding(
                           padding: const EdgeInsets.only(top: 16),
                           child: Center(

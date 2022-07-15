@@ -30,7 +30,7 @@ class _MapMarker extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
+    return GestureDetector(
       child: DecoratedBox(
         decoration: BoxDecoration(
           shape: BoxShape.circle,
@@ -225,32 +225,6 @@ class LeafletMapState extends State<LeafletMap> with TickerProviderStateMixin, A
                     subdomains: ['a', 'b', 'c'],
                   ),
                   MarkerLayerOptions(
-                    // MarkerClusterLayerOptions(
-                    // TODO: Add marker clusters
-                    // builder: (context, markers) {
-                    //   return DecoratedBox(
-                    //     decoration: const BoxDecoration(
-                    //       shape: BoxShape.circle,
-                    //       color: Colors.white,
-                    //       boxShadow: [
-                    //         BoxShadow(
-                    //           offset: Offset(0, 2),
-                    //           blurRadius: 4,
-                    //           color: Colors.black12,
-                    //         ),
-                    //       ],
-                    //     ),
-                    //     child: SizedBox(
-                    //       width: 44,
-                    //       height: 44,
-                    //       child: Center(
-                    //         child: Text(
-                    //           markers.length.toString(),
-                    //         ),
-                    //       ),
-                    //     ),
-                    //   );
-                    // },
                     markers: widget.station != null
                         ? [
                             Marker(
