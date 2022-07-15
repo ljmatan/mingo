@@ -46,6 +46,7 @@ class GuidePage extends StatelessWidget {
                             Flexible(
                               child: Text(
                                 _guidePoints.elementAt(i),
+                                style: const TextStyle(height: 2.4),
                               ),
                             ),
                           ],

@@ -47,6 +47,7 @@ class PrivacyPolicyPage extends StatelessWidget {
                                     ? const TextStyle(
                                         fontWeight: FontWeight.w600,
                                         fontSize: 18,
+                                        height: 2.4,
                                       )
                                     : null,
                               ),

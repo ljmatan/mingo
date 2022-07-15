@@ -31,6 +31,7 @@ abstract class MinGOData {
     value.fuels.removeWhere((e) => e.name == null || e.providerId == null || e.fuelKindId == null);
     value.fuels.removeWhere((f) => value.stations.where((s) => s.priceList.where((p) => p.fuelId == f.id).isNotEmpty).isEmpty);
     value.providers.removeWhere((p) => value.stations.where((s) => s.providerId == p.id).isEmpty);
+    value.fuelTypes.removeWhere((e) => e.fuelKindId > 4);
     instance = value;
   }
 
@@ -59,6 +60,7 @@ abstract class MinGOData {
     final orderedList = <Map>[];
 
     for (var station in stations) {
+      if (!StationUtil.isOpen(station)) continue;
       late Iterable<Price> prices;
       if (fuelTypeId == 1) {
         prices = station.priceList.where(
@@ -222,11 +224,57 @@ abstract class MinGOData {
   }
 
   static final filteredFuelTypes = <Map<String, dynamic>>[];
-  static bool isFilteredFuelType(Station station) =>
-      filteredFuelTypes.isEmpty ||
-      station.priceList.any(
-        (price) => filteredFuelTypes.where((e) => e['id'] == instance.fuels.firstWhere((f) => f.id == price.fuelId).fuelKindId).isNotEmpty,
-      );
+  static bool isFilteredFuelType(Station station) {
+    if (filteredFuelTypes.isEmpty) return true;
+    return station.priceList.any(
+      (price) {
+        return filteredFuelTypes.where(
+          (e) {
+            return e['id'] == 1 &&
+                    (1 ==
+                            instance.fuels.firstWhere(
+                              (f) {
+                                return f.id == price.fuelId;
+                              },
+                            ).fuelKindId ||
+                        2 ==
+                            instance.fuels.firstWhere(
+                              (f) {
+                                return f.id == price.fuelId;
+                              },
+                            ).fuelKindId) ||
+                e['id'] == 2 &&
+                    (7 ==
+                            instance.fuels.firstWhere(
+                              (f) {
+                                return f.id == price.fuelId;
+                              },
+                            ).fuelKindId ||
+                        8 ==
+                            instance.fuels.firstWhere(
+                              (f) {
+                                return f.id == price.fuelId;
+                              },
+                            ).fuelKindId) ||
+                e['id'] == 3 &&
+                    (9 ==
+                        instance.fuels.firstWhere(
+                          (f) {
+                            return f.id == price.fuelId;
+                          },
+                        ).fuelKindId) ||
+                e['id'] == 4 &&
+                    (10 ==
+                        instance.fuels.firstWhere(
+                          (f) {
+                            return f.id == price.fuelId;
+                          },
+                        ).fuelKindId);
+          },
+        ).isNotEmpty;
+      },
+    );
+  }
 
   static final filteredOptions = <int>[];
   static bool isFilteredOption(Station station) =>

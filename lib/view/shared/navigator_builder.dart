@@ -26,9 +26,9 @@ class _NavigatorBuilderState extends State<NavigatorBuilder> {
                 ? kIsWeb
                     ? .9
                     : .8
-                : kIsWeb || Platform.isIOS
-                    ? .8
-                    : .6,
+                : MediaQuery.of(context).size.width < 300
+                    ? .6
+                    : .8,
       ),
       child: AnnotatedRegion<SystemUiOverlayStyle>(
         value: Theme.of(context).appBarTheme.systemOverlayStyle!,

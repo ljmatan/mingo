@@ -97,7 +97,9 @@ class _MinGOActionButtonState extends State<MinGOActionButton> {
                                             Text(
                                               widget.label,
                                               style: TextStyle(
-                                                fontSize: MediaQuery.of(context).size.width <= 400
+                                                color: Colors.black,
+                                                fontWeight: FontWeight.w600,
+                                                fontSize: MediaQuery.of(context).size.width <= 300
                                                     ? 12
                                                     : MediaQuery.of(context).size.width < 500
                                                         ? 14
@@ -112,7 +114,13 @@ class _MinGOActionButtonState extends State<MinGOActionButton> {
                                           ],
                                         )
                                       : Center(
-                                          child: Text(widget.label),
+                                          child: Text(
+                                            widget.label,
+                                            style: Theme.of(context).textTheme.bodyText1!.copyWith(
+                                                  fontWeight: FontWeight.w600,
+                                                  color: Colors.black,
+                                                ),
+                                          ),
                                         ),
                                 ),
                               ),
@@ -151,7 +159,8 @@ class _MinGOActionButtonState extends State<MinGOActionButton> {
                                         Text(
                                           widget.label,
                                           style: Theme.of(context).textTheme.bodyText1!.copyWith(
-                                                fontSize: MediaQuery.of(context).size.width <= 400
+                                                fontWeight: FontWeight.w600,
+                                                fontSize: MediaQuery.of(context).size.width <= 300
                                                     ? 12
                                                     : MediaQuery.of(context).size.width < 500
                                                         ? 13
@@ -169,7 +178,7 @@ class _MinGOActionButtonState extends State<MinGOActionButton> {
                                   : Center(
                                       child: Text(
                                         widget.label,
-                                        style: Theme.of(context).textTheme.bodyText1,
+                                        style: Theme.of(context).textTheme.bodyText1!.copyWith(fontWeight: FontWeight.w600),
                                       ),
                                     ),
                             ),

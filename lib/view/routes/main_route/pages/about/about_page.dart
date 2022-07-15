@@ -81,7 +81,7 @@ class AboutPage extends StatelessWidget {
                         'derivatima i konkurentnije određivanje cijena naftnih derivata, pojačavanje tržišne '
                         'utakmice, određivanje cijena na dnevnoj bazi.\n\n'
                         'Stvoreni su uvjeti za trenutačni i potpuni uvid u promjene cijena svih trgovaca naftnim derivatima.',
-                        style: MediaQuery.of(context).size.width < 600 ? null : const TextStyle(height: 2),
+                        style: MediaQuery.of(context).size.width < 600 ? null : const TextStyle(height: 2.4),
                       ),
                     ),
                     const SizedBox(height: 20),
@@ -133,7 +133,7 @@ class AboutPage extends StatelessWidget {
                         '· Ukoliko želite primati obavijesti o cijenama goriva na email, prijavite se pomoću forme na '
                         'dnu naslovne stranice\n'
                         '· Na stranici svake postaje možete vidjeti trend kretanja cijena \n\n',
-                        style: MediaQuery.of(context).size.width < 600 ? null : const TextStyle(height: 2),
+                        style: MediaQuery.of(context).size.width < 600 ? null : const TextStyle(height: 2.4),
                       ),
                     ),
                   ],

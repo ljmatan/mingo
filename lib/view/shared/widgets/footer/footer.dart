@@ -69,21 +69,42 @@ class Footer extends StatelessWidget {
                     padding: const EdgeInsets.only(bottom: 12),
                     child: ConstrainedBox(
                       constraints: const BoxConstraints(maxWidth: 300),
-                      child: SvgPicture.asset(
-                        'assets/vectors/footer/ev_banner.svg',
-                        width: MediaQuery.of(context).size.width,
+                      child: DecoratedBox(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(5),
+                          color: const Color(0xff16FFBD),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+                          child: Row(
+                            children: const [
+                              Padding(
+                                padding: EdgeInsets.only(right: 16),
+                                child: Icon(
+                                  Icons.ev_station,
+                                  size: 40,
+                                ),
+                              ),
+                              Expanded(
+                                child: Text('Informacije punionica za električna vozila dolaze uskoro!'),
+                              ),
+                            ],
+                          ),
+                        ),
                       ),
                     ),
                   ),
-                  MinGOActionButton(
-                    label: 'Kontaktirajte nas',
-                    icon: Icons.chevron_right,
-                    minWidth: true,
-                    onTap: () => showDialog(
-                      context: context,
-                      useSafeArea: false,
-                      barrierColor: Colors.transparent,
-                      builder: (context) => const ContactDialog(),
+                  ConstrainedBox(
+                    constraints: const BoxConstraints(maxWidth: 300),
+                    child: MinGOActionButton(
+                      label: 'Kontaktirajte nas',
+                      icon: Icons.chevron_right,
+                      onTap: () => showDialog(
+                        context: context,
+                        useSafeArea: false,
+                        barrierColor: Colors.transparent,
+                        builder: (context) => const ContactDialog(),
+                      ),
                     ),
                   ),
                 ],

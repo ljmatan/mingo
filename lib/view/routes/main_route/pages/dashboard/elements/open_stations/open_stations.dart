@@ -59,15 +59,13 @@ class _DashboardPageOpenStationsState extends State<DashboardPageOpenStations> {
                             ),
                           ),
                         ),
-                      if (MediaQuery.of(context).size.width < 1000 &&
-                          (_page + 1) * 3 < (openStations.data!.length < length ? openStations.data!.length : length))
+                      if (MediaQuery.of(context).size.width < 1000 && (_page + 1) * 3 < openStations.data!.length)
                         Padding(
-                          padding: const EdgeInsets.only(top: 16),
+                          padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
                           child: Center(
                             child: MinGOActionButton(
                               label: 'Prikaži više',
                               icon: Icons.chevron_right,
-                              minWidth: true,
                               onTap: () {
                                 if (mounted) setState(() => _page++);
                               },

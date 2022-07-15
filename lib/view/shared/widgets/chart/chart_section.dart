@@ -214,4 +214,10 @@ class _FuelTrendsChartSectionState extends State<FuelTrendsChartSection> {
       ),
     );
   }
+
+  @override
+  void dispose() {
+    FuelTrendsChartSection.selectedPrices.clear();
+    super.dispose();
+  }
 }

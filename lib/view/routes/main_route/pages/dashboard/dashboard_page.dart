@@ -70,6 +70,25 @@ class _DashboardPageState extends State<DashboardPage> {
                     onSearchViewOpened: _onSearchViewOpened,
                     onFilterViewOpened: _onFilterViewOpened,
                   ),
+                  DecoratedBox(
+                    decoration: const BoxDecoration(
+                      color: Color(0xff16FFBD),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                      child: Row(
+                        children: const [
+                          Padding(
+                            padding: EdgeInsets.only(right: 8),
+                            child: Icon(Icons.ev_station),
+                          ),
+                          Expanded(
+                            child: Text('Informacije punionica za električna vozila dolaze uskoro!'),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
                   DashboardPageMap(
                     mapKey: _mapKey,
                     enableScroll: _enableScroll,
