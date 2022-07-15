@@ -6,11 +6,13 @@ import 'package:mingo/view/shared/widgets/map/leaflet_map.dart';
 class DashboardPageMap extends StatefulWidget {
   final GlobalKey<LeafletMapState> mapKey;
   final Function(bool) enableScroll;
+  final ScrollController scrollController;
 
   const DashboardPageMap({
     super.key,
     required this.mapKey,
     required this.enableScroll,
+    required this.scrollController,
   });
 
   @override
@@ -42,13 +44,17 @@ class _DashboardPageMapState extends State<DashboardPageMap> {
           Listener(
             child: kIsWeb
                 ? MouseRegion(
-                    child: LeafletMap(key: _mapKey),
+                    child: LeafletMap(
+                      key: _mapKey,
+                      scrollController: widget.scrollController,
+                    ),
                     onEnter: (_) => _mapKey.currentState!.enableInput(false),
                     onExit: (_) => _mapKey.currentState!.enableInput(true),
                     cursor: MouseCursor.uncontrolled,
                   )
                 : LeafletMap(
                     key: _mapKey,
+                    scrollController: widget.scrollController,
                   ),
             onPointerDown: (_) => widget.enableScroll(false),
             onPointerUp: (_) => widget.enableScroll(true),

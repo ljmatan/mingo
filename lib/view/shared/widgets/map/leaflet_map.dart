@@ -45,8 +45,8 @@ class _MapMarker extends StatelessWidget {
         ),
         child: SizedBox.fromSize(
           size: Size(
-            MediaQuery.of(context).size.width < 1000 ? 40 : 30,
-            MediaQuery.of(context).size.width < 1000 ? 40 : 30,
+            MediaQuery.of(context).size.width < 1000 ? 44 : 30,
+            MediaQuery.of(context).size.width < 1000 ? 44 : 30,
           ),
           child: index != null
               ? Center(
@@ -66,11 +66,13 @@ class _MapMarker extends StatelessWidget {
 class LeafletMap extends StatefulWidget {
   final Station? station;
   final bool providersSearch;
+  final ScrollController? scrollController;
 
   const LeafletMap({
     super.key,
     this.station,
     this.providersSearch = false,
+    this.scrollController,
   });
 
   @override
@@ -91,6 +93,8 @@ class LeafletMapState extends State<LeafletMap> with TickerProviderStateMixin, A
   void enableInput(bool enabled) {
     if (kIsWeb && _animationController?.isAnimating != true) setState(() => _lockedZoom = enabled ? null : mapController.zoom);
   }
+
+  late double _zoom;
 
   Future<void> move({
     double? lat,
@@ -170,8 +174,6 @@ class LeafletMapState extends State<LeafletMap> with TickerProviderStateMixin, A
     }
   }
 
-  late double _zoom;
-
   @override
   void initState() {
     super.initState();
@@ -184,6 +186,15 @@ class LeafletMapState extends State<LeafletMap> with TickerProviderStateMixin, A
   final _widgetKey = GlobalKey();
 
   Future<void> _onMarkerTap(Station station) async {
+    if (widget.scrollController != null && widget.scrollController!.offset > 200) {
+      await widget.scrollController
+          ?.animateTo(
+            0,
+            duration: const Duration(milliseconds: 600),
+            curve: Curves.fastLinearToSlowEaseIn,
+          )
+          .whenComplete(() async => await Future.delayed(const Duration(milliseconds: 20)));
+    }
     final renderBox = _widgetKey.currentContext!.findRenderObject() as RenderBox;
     final widgetOffset = renderBox.localToGlobal(Offset.zero);
     final topPadding = MediaQuery.of(context).padding.top;
@@ -431,7 +442,7 @@ class LeafletMapState extends State<LeafletMap> with TickerProviderStateMixin, A
             );
           },
         ),
-        onPointerUp: (event) {
+        onPointerUp: (_) {
           if (_zoom - mapController.zoom < .5 || _zoom - mapController.zoom > .5) {
             _zoom = mapController.zoom;
             MinGOData.mapReferencePoint = mapController.center;

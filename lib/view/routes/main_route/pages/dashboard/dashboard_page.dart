@@ -92,6 +92,7 @@ class _DashboardPageState extends State<DashboardPage> {
                   DashboardPageMap(
                     mapKey: _mapKey,
                     enableScroll: _enableScroll,
+                    scrollController: _scrollController,
                   ),
                   const DashboardPageOpenStations(),
                   const FuelTrendsChartSection(),
@@ -111,6 +112,7 @@ class _DashboardPageState extends State<DashboardPage> {
                       DashboardPageMap(
                         mapKey: _mapKey,
                         enableScroll: _enableScroll,
+                        scrollController: _scrollController,
                       ),
                     ],
                   ),
@@ -191,6 +193,12 @@ class _DashboardPageState extends State<DashboardPage> {
           ),
       ],
     );
+  }
+
+  @override
+  void deactivate() {
+    DashboardPage.searchFieldKey!.currentState?.resetView();
+    super.deactivate();
   }
 
   @override

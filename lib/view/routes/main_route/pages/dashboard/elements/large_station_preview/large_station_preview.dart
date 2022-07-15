@@ -33,6 +33,7 @@ class _DashboardPageLargeStationPreviewState extends State<DashboardPageLargeSta
               MinGOData.instance.fuels.firstWhere((f) => f.id == p.fuelId).fuelKindId == 8 && MinGOData.filterConfig.fuelTypeId == 2,
         )
         .toList();
+    prices.sort((a, b) => a.price!.compareTo(b.price!));
   }
 
   @override
