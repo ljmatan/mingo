@@ -78,10 +78,13 @@ class _ProvidersSearchPageState extends State<ProvidersSearchPage> with WidgetsB
     }
   }
 
+  final _scrollController = ScrollController();
+
   @override
   Widget build(BuildContext context) {
     return MediaQuery.of(context).size.width < 1000
         ? ListView(
+            controller: _scrollController,
             physics: _scrollEnabled ? null : const NeverScrollableScrollPhysics(),
             padding: EdgeInsets.zero,
             children: [
@@ -98,6 +101,7 @@ class _ProvidersSearchPageState extends State<ProvidersSearchPage> with WidgetsB
                                     child: LeafletMap(
                                       key: _mapKey,
                                       providersSearch: true,
+                                      scrollController: _scrollController,
                                     ),
                                     onEnter: (_) => _mapKey.currentState!.enableInput(false),
                                     onExit: (_) => _mapKey.currentState!.enableInput(true),
@@ -106,6 +110,7 @@ class _ProvidersSearchPageState extends State<ProvidersSearchPage> with WidgetsB
                                 : LeafletMap(
                                     key: _mapKey,
                                     providersSearch: true,
+                                    scrollController: _scrollController,
                                   ),
                             onPointerDown: (_) {
                               if (_textInputFocusNode.hasFocus) FocusScope.of(context).unfocus();
@@ -710,6 +715,7 @@ class _ProvidersSearchPageState extends State<ProvidersSearchPage> with WidgetsB
 
   @override
   void dispose() {
+    _scrollController.dispose();
     _textInputController.dispose();
     _textInputFocusNode.dispose();
     _resultsViewController.close();

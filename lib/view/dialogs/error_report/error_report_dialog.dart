@@ -65,7 +65,7 @@ class _ErrorReportDialogState extends State<ErrorReportDialog> {
                     ),
                 ],
                 validator: (value) {
-                  if (_providerId == null) return 'Molimo unesite vrijednost.';
+                  if (_providerId == null) return 'Molimo unesite vrijednost';
                   return null;
                 },
                 onChanged: (value) {
@@ -98,7 +98,7 @@ class _ErrorReportDialogState extends State<ErrorReportDialog> {
                     ),
                 ],
                 validator: (value) {
-                  if (_stationId == null) return 'Molimo unesite vrijednost.';
+                  if (_stationId == null) return 'Molimo unesite vrijednost';
                   return null;
                 },
                 onChanged: (value) => _stationId = value,

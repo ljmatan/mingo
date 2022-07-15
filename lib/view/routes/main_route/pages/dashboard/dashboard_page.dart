@@ -198,6 +198,10 @@ class _DashboardPageState extends State<DashboardPage> {
   @override
   void deactivate() {
     DashboardPage.searchFieldKey!.currentState?.resetView();
+    MinGOData.mapReferencePoint = LatLng(
+      LocationServices.locationData?.latitude ?? 45.8150,
+      LocationServices.locationData?.latitude ?? 15.9819,
+    );
     super.deactivate();
   }
 
@@ -206,10 +210,6 @@ class _DashboardPageState extends State<DashboardPage> {
     DashboardPage.searchFieldKey = null;
     _scrollController.dispose();
     _searchFieldController.dispose();
-    MinGOData.mapReferencePoint = LatLng(
-      LocationServices.locationData?.latitude ?? 45.8150,
-      LocationServices.locationData?.latitude ?? 15.9819,
-    );
     MinGOData.resetFilters();
     super.dispose();
   }

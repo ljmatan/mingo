@@ -84,7 +84,7 @@ class _InputFieldsState extends State<_InputFields> {
                       ),
                   ],
                   validator: (value) {
-                    if (value == null) return 'Molimo unesite vrijednost.';
+                    if (value == null) return 'Molimo unesite vrijednost';
                     return null;
                   },
                   onChanged: (value) => _fuelType = value,
@@ -113,7 +113,7 @@ class _InputFieldsState extends State<_InputFields> {
                       ),
                   ],
                   validator: (value) {
-                    if (value == null) return 'Molimo unesite vrijednost.';
+                    if (value == null) return 'Molimo unesite vrijednost';
                     return null;
                   },
                   onChanged: (value) => _county = value,

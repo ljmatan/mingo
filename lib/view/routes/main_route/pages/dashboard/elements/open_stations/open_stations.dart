@@ -59,7 +59,7 @@ class _DashboardPageOpenStationsState extends State<DashboardPageOpenStations> {
                             ),
                           ),
                         ),
-                      if (MediaQuery.of(context).size.width < 1000 && (_page + 1) * 3 < openStations.data!.length)
+                      if (MediaQuery.of(context).size.width < 1000 && _page * 3 < openStations.data!.length)
                         Padding(
                           padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
                           child: Center(

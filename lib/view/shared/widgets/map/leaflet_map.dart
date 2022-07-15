@@ -190,10 +190,10 @@ class LeafletMapState extends State<LeafletMap> with TickerProviderStateMixin, A
       await widget.scrollController
           ?.animateTo(
             0,
-            duration: const Duration(milliseconds: 600),
-            curve: Curves.fastLinearToSlowEaseIn,
+            duration: Duration(milliseconds: widget.scrollController!.offset.toInt()),
+            curve: Curves.linearToEaseOut,
           )
-          .whenComplete(() async => await Future.delayed(const Duration(milliseconds: 20)));
+          .whenComplete(() async => await Future.delayed(const Duration(milliseconds: 1)));
     }
     final renderBox = _widgetKey.currentContext!.findRenderObject() as RenderBox;
     final widgetOffset = renderBox.localToGlobal(Offset.zero);
