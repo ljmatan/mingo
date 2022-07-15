@@ -186,99 +186,110 @@ class LeafletMapState extends State<LeafletMap> with TickerProviderStateMixin, A
   Future<void> _onMarkerTap(Station station) async {
     final renderBox = _widgetKey.currentContext!.findRenderObject() as RenderBox;
     final widgetOffset = renderBox.localToGlobal(Offset.zero);
+    final topPadding = MediaQuery.of(context).padding.top;
     await showDialog(
       context: context,
       barrierColor: Colors.transparent,
-      builder: (context) => Material(
-        color: Colors.transparent,
-        child: GestureDetector(
-          behavior: HitTestBehavior.opaque,
-          child: Transform.translate(
-            offset: Offset(widgetOffset.dx, widgetOffset.dy - renderBox.size.height / 2),
-            child: Center(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: ConstrainedBox(
-                  constraints: const BoxConstraints(maxWidth: 400),
-                  child: InkWell(
-                    child: DecoratedBox(
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(10),
-                        border: Border.all(
-                          color: const Color(0xffE7E7E7),
-                        ),
-                      ),
+      builder: (context) {
+        return Material(
+          color: Colors.transparent,
+          child: GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            child: Transform.translate(
+              offset: Offset(widgetOffset.dx, widgetOffset.dy - topPadding),
+              child: Column(
+                children: [
+                  SizedBox(
+                    width: renderBox.size.width,
+                    height: renderBox.size.height,
+                    child: Center(
                       child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Text(
-                                        station.place,
-                                        style: const TextStyle(
-                                          fontSize: 18,
-                                        ),
-                                      ),
-                                      Text(
-                                        station.name,
-                                        style: const TextStyle(
-                                          fontWeight: FontWeight.w600,
-                                          fontSize: 18,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        child: ConstrainedBox(
+                          constraints: const BoxConstraints(maxWidth: 400),
+                          child: InkWell(
+                            child: DecoratedBox(
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(10),
+                                border: Border.all(
+                                  color: const Color(0xffE7E7E7),
                                 ),
-                                WorkHoursIndicator(station),
-                              ],
-                            ),
-                            const SizedBox(height: 10),
-                            ProviderInfo(
-                              station,
-                              popup: true,
-                            ),
-                            const Padding(
-                              padding: EdgeInsets.only(top: 14),
-                              child: Center(
-                                child: MinGOActionButton(
-                                  label: 'Detalji',
-                                  icon: Icons.chevron_right,
-                                  minWidth: true,
-                                  gradientBorder: true,
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Expanded(
+                                          child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              Text(
+                                                station.place,
+                                                style: const TextStyle(
+                                                  fontSize: 18,
+                                                ),
+                                              ),
+                                              Text(
+                                                station.name,
+                                                style: const TextStyle(
+                                                  fontWeight: FontWeight.w600,
+                                                  fontSize: 18,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        WorkHoursIndicator(station),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 10),
+                                    ProviderInfo(
+                                      station,
+                                      popup: true,
+                                    ),
+                                    const Padding(
+                                      padding: EdgeInsets.only(top: 14),
+                                      child: Center(
+                                        child: MinGOActionButton(
+                                          label: 'Detalji',
+                                          icon: Icons.chevron_right,
+                                          minWidth: true,
+                                          gradientBorder: true,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
                             ),
-                          ],
+                            onTap: () {
+                              Navigator.pop(context);
+                              Navigator.of(context).push(
+                                MaterialPageRoute<void>(
+                                  builder: (BuildContext context) => ProviderDetailsRoute(station),
+                                ),
+                              );
+                            },
+                          ),
                         ),
                       ),
                     ),
-                    onTap: () {
-                      Navigator.pop(context);
-                      Navigator.of(context).push(
-                        MaterialPageRoute<void>(
-                          builder: (BuildContext context) => ProviderDetailsRoute(station),
-                        ),
-                      );
-                    },
                   ),
-                ),
+                ],
               ),
             ),
+            onTap: () => Navigator.pop(context),
           ),
-          onTap: () => Navigator.pop(context),
-        ),
-      ),
+        );
+      },
     );
   }
 
@@ -421,7 +432,7 @@ class LeafletMapState extends State<LeafletMap> with TickerProviderStateMixin, A
           },
         ),
         onPointerUp: (event) {
-          if (_zoom - mapController.zoom < 1 || _zoom - mapController.zoom > 1) {
+          if (_zoom - mapController.zoom < .5 || _zoom - mapController.zoom > .5) {
             _zoom = mapController.zoom;
             MinGOData.mapReferencePoint = mapController.center;
           }

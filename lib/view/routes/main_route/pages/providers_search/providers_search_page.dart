@@ -700,6 +700,15 @@ class _ProvidersSearchPageState extends State<ProvidersSearchPage> with WidgetsB
   }
 
   @override
+  void deactivate() {
+    MinGOData.mapReferencePoint = LatLng(
+      LocationServices.locationData?.latitude ?? 45.8150,
+      LocationServices.locationData?.latitude ?? 15.9819,
+    );
+    super.deactivate();
+  }
+
+  @override
   void dispose() {
     _textInputController.dispose();
     _textInputFocusNode.dispose();

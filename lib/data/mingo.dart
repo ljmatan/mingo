@@ -32,6 +32,14 @@ abstract class MinGOData {
     value.fuels.removeWhere((f) => value.stations.where((s) => s.priceList.where((p) => p.fuelId == f.id).isNotEmpty).isEmpty);
     value.providers.removeWhere((p) => value.stations.where((s) => s.providerId == p.id).isEmpty);
     value.fuelTypes.removeWhere((e) => e.fuelKindId > 4);
+    for (var station in value.stations) {
+      station.priceList.sort(
+        (a, b) => value.fuels
+            .firstWhere((e) => e.id == a.fuelId)
+            .fuelKindId!
+            .compareTo(value.fuels.firstWhere((e) => e.id == b.fuelId).fuelKindId!),
+      );
+    }
     instance = value;
   }
 
