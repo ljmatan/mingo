@@ -69,7 +69,7 @@ class FuelPreview extends StatelessWidget {
         ],
       ),
       child: Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding: minAxisSize ? const EdgeInsets.symmetric(horizontal: 16, vertical: 8) : const EdgeInsets.all(8.0),
         child: Row(
           mainAxisSize: minAxisSize ? MainAxisSize.min : MainAxisSize.max,
           children: [

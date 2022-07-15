@@ -146,11 +146,14 @@ class _DashboardPageSearchViewState extends State<DashboardPageSearchView> {
                       stream: _searchTermConroller.stream,
                       initialData: widget.searchFieldController.text,
                       builder: (context, searchTerm) {
-                        final places = searchTerm.data!.isEmpty
+                        final places = searchTerm.data!.trim().isEmpty
                             ? MinGOData.instance.places
                             : MinGOData.instance.places
                                 .where(
                                   (e) =>
+                                      searchTerm.data!.trim().length > 3 &&
+                                          e.name.trim().toLowerCase().contains(searchTerm.data!.trim().toLowerCase()) ||
+                                      e.name.toLowerCase().startsWith(searchTerm.data!.trim().toLowerCase()) ||
                                       e.name.split(' ').where((e) => e.toLowerCase().startsWith(searchTerm.data!.toLowerCase())).isNotEmpty,
                                 )
                                 .toList();
@@ -160,7 +163,6 @@ class _DashboardPageSearchViewState extends State<DashboardPageSearchView> {
                             child: Text('Nema rezultata pretrage'),
                           );
                         }
-                        if (searchTerm.data!.isEmpty) places.shuffle();
                         return Column(
                           mainAxisSize: MainAxisSize.min,
                           crossAxisAlignment: CrossAxisAlignment.start,

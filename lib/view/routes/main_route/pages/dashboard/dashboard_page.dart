@@ -1,13 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:mingo/data/mingo.dart';
-import 'package:mingo/models/app_data.dart';
 import 'package:mingo/services/location/location.dart';
-import 'package:mingo/view/routes/main_route/bloc/page_controller.dart';
-import 'package:mingo/view/routes/main_route/pages/dashboard/bloc/open_stations_controller.dart';
 import 'package:mingo/view/routes/main_route/pages/dashboard/elements/open_stations/open_stations.dart';
 import 'package:mingo/view/shared/widgets/chart/chart_section.dart';
-import 'package:mingo/view/routes/main_route/pages/dashboard/elements/large_station_preview/large_station_preview.dart';
-import 'package:mingo/view/shared/basic/action_button.dart';
 import 'package:mingo/view/shared/widgets/footer/footer.dart';
 import 'package:mingo/view/shared/widgets/map/leaflet_map.dart';
 import 'package:mingo/view/shared/widgets/title/title.dart';
@@ -130,54 +125,7 @@ class _DashboardPageState extends State<DashboardPage> {
                         ),
                       ),
                     ),
-                  if (MinGOData.openStations.length - 3 > 0)
-                    DecoratedBox(
-                      decoration: const BoxDecoration(
-                        color: Color(0xffF9F9F9),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 40),
-                        child: StreamBuilder<List<Station>>(
-                          stream: DashboardPageOpenStationsController.stream,
-                          initialData: MinGOData.openStations,
-                          builder: (context, openStations) {
-                            return Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    for (int i = 3;
-                                        i <
-                                            (MediaQuery.of(context).size.width > 1300
-                                                ? ((MinGOData.openStations.length - 3) < 7 ? (MinGOData.openStations.length - 3) : 7)
-                                                : ((MinGOData.openStations.length - 3) < 6 ? (MinGOData.openStations.length - 3) : 6));
-                                        i++)
-                                      Padding(
-                                        padding: const EdgeInsets.symmetric(horizontal: 10),
-                                        child: DashboardPageLargeStationPreview(
-                                          MinGOData.openStations[i],
-                                        ),
-                                      ),
-                                  ],
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(top: 30),
-                                  child: Center(
-                                    child: MinGOActionButton(
-                                      label: 'Prikaži više',
-                                      icon: Icons.chevron_right,
-                                      minWidth: true,
-                                      onTap: () => MainRoutePageController.navigateTo(1),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            );
-                          },
-                        ),
-                      ),
-                    ),
+                  if (MinGOData.orderedStations.length - 3 > 0) const DashboardPageOpenStations(),
                   const FuelTrendsChartSection(),
                   const NewsletterSubscriptionField(),
                   const Footer(),

@@ -29,7 +29,7 @@ class _MapMarker extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return InkWell(
       child: DecoratedBox(
         decoration: BoxDecoration(
           shape: BoxShape.circle,
@@ -105,51 +105,70 @@ class LeafletMapState extends State<LeafletMap> with TickerProviderStateMixin, A
     bool markerTap = false,
   }) async {
     assert(lat == null && lng == null || lat != null && lng != null);
-    if (!animated && lat != null && lng != null) {
-      mapController.move(LatLng(lat, lng), mapController.zoom);
-      return;
-    }
-    if (zoom == null && lat == mapController.center.latitude && lng == mapController.center.longitude) return;
-    double zoomValue = absoluteZoomValue ? (zoom ?? mapController.zoom) : mapController.zoom + (zoom ?? 0);
-    if (zoomValue < 9 || zoomValue > 16) zoomValue = mapController.zoom;
-    final zoomTween = Tween<double>(
-      begin: mapController.zoom,
-      end: zoomValue,
-    );
-    final latTween = Tween<double>(
-      begin: mapController.center.latitude,
-      end: (lat != null && lng != null && !_bounds.contains(LatLng(lat, lng)) ? null : lat) ?? mapController.center.latitude,
-    );
-    final lngTween = Tween<double>(
-      begin: mapController.center.longitude,
-      end: (lat != null && lng != null && !_bounds.contains(LatLng(lat, lng)) ? null : lng) ?? mapController.center.longitude,
-    );
-    _animationController = AnimationController(
-      duration: const Duration(milliseconds: 500),
-      vsync: this,
-    );
-    Animation<double> animation = CurvedAnimation(
-      parent: _animationController!,
-      curve: Curves.fastOutSlowIn,
-    );
-    _animationController!.addListener(() {
-      mapController.move(
-        LatLng(latTween.evaluate(animation), lngTween.evaluate(animation)),
-        zoomTween.evaluate(animation),
-      );
-    });
-    animation.addStatusListener((status) {
-      if (status == AnimationStatus.completed || status == AnimationStatus.dismissed) {
+    if (kIsWeb) {
+      if (lat != null && lng != null) {
+        mapController.move(LatLng(lat, lng), mapController.zoom);
         enableInput(false);
-        _animationController!.dispose();
-        if (markerTap) {
-          _zoom = mapController.zoom;
-          MinGOData.mapReferencePoint = mapController.center;
-        }
+        return;
       }
-    });
-    enableInput(true);
-    _animationController!.forward();
+      if (zoom == null && lat == mapController.center.latitude && lng == mapController.center.longitude) return;
+      double zoomValue = absoluteZoomValue ? (zoom ?? mapController.zoom) : mapController.zoom + (zoom ?? 0);
+      if (zoomValue < 9 || zoomValue > 16) zoomValue = mapController.zoom;
+      mapController.move(
+        LatLng(
+          mapController.center.latitude,
+          mapController.center.longitude,
+        ),
+        zoomValue,
+      );
+      enableInput(false);
+    } else {
+      if (!animated && lat != null && lng != null) {
+        mapController.move(LatLng(lat, lng), mapController.zoom);
+        return;
+      }
+      if (zoom == null && lat == mapController.center.latitude && lng == mapController.center.longitude) return;
+      double zoomValue = absoluteZoomValue ? (zoom ?? mapController.zoom) : mapController.zoom + (zoom ?? 0);
+      if (zoomValue < 9 || zoomValue > 16) zoomValue = mapController.zoom;
+      final zoomTween = Tween<double>(
+        begin: mapController.zoom,
+        end: zoomValue,
+      );
+      final latTween = Tween<double>(
+        begin: mapController.center.latitude,
+        end: (lat != null && lng != null && !_bounds.contains(LatLng(lat, lng)) ? null : lat) ?? mapController.center.latitude,
+      );
+      final lngTween = Tween<double>(
+        begin: mapController.center.longitude,
+        end: (lat != null && lng != null && !_bounds.contains(LatLng(lat, lng)) ? null : lng) ?? mapController.center.longitude,
+      );
+      _animationController = AnimationController(
+        duration: const Duration(milliseconds: 500),
+        vsync: this,
+      );
+      Animation<double> animation = CurvedAnimation(
+        parent: _animationController!,
+        curve: Curves.fastOutSlowIn,
+      );
+      _animationController!.addListener(() {
+        mapController.move(
+          LatLng(latTween.evaluate(animation), lngTween.evaluate(animation)),
+          zoomTween.evaluate(animation),
+        );
+      });
+      animation.addStatusListener((status) {
+        if (status == AnimationStatus.completed || status == AnimationStatus.dismissed) {
+          enableInput(false);
+          _animationController!.dispose();
+          if (markerTap) {
+            _zoom = mapController.zoom;
+            MinGOData.mapReferencePoint = mapController.center;
+          }
+        }
+      });
+      enableInput(true);
+      _animationController!.forward();
+    }
   }
 
   List<Station>? get _orderedStations {
@@ -207,8 +226,12 @@ class LeafletMapState extends State<LeafletMap> with TickerProviderStateMixin, A
           child: GestureDetector(
             behavior: HitTestBehavior.opaque,
             child: Transform.translate(
-              offset: Offset(widgetOffset.dx, widgetOffset.dy - topPadding),
+              offset: Offset(
+                MediaQuery.of(context).size.width < 1000 ? widgetOffset.dx : MediaQuery.of(context).size.width * (2 / 5),
+                widgetOffset.dy - topPadding,
+              ),
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   SizedBox(
                     width: renderBox.size.width,
@@ -320,7 +343,7 @@ class LeafletMapState extends State<LeafletMap> with TickerProviderStateMixin, A
               options: MapOptions(
                 controller: mapController,
                 zoom: widget.station != null ? 16 : 11.5,
-                minZoom: _lockedZoom ?? (widget.providersSearch ? null : (MediaQuery.of(context).size.width < 1000 ? 12 : 11)),
+                minZoom: _lockedZoom ?? (widget.providersSearch ? null : 12),
                 maxZoom: _lockedZoom ?? (widget.providersSearch ? null : 16),
                 center: widget.station != null
                     ? LatLng(

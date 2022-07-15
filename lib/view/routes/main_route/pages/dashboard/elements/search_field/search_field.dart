@@ -3,6 +3,7 @@ import 'package:mingo/data/mingo.dart';
 import 'package:mingo/models/app_data.dart';
 import 'package:mingo/utils/station/station_util.dart';
 import 'package:mingo/view/routes/main_route/pages/dashboard/bloc/open_stations_controller.dart';
+import 'package:mingo/view/routes/main_route/pages/dashboard/elements/open_stations/open_stations.dart';
 import 'package:mingo/view/routes/main_route/pages/dashboard/elements/search_field/elements/animated_dropdown/animated_dropdown.dart';
 import 'package:mingo/view/routes/main_route/pages/dashboard/elements/search_field/elements/filter_view/filter_view.dart';
 import 'package:mingo/view/routes/main_route/pages/dashboard/elements/search_field/elements/search_view/search_view.dart';
@@ -232,236 +233,105 @@ class DashboardPageSearchFieldState extends State<DashboardPageSearchField> {
                             widget.onFilterViewOpened(false);
                           },
                         )
-                      : StreamBuilder<List<Station>>(
-                          stream: DashboardPageOpenStationsController.stream,
-                          initialData: MinGOData.openStations,
-                          builder: (context, openStations) {
-                            return Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                DecoratedBox(
-                                  decoration: const BoxDecoration(
-                                    color: Color(0xff435467),
-                                  ),
-                                  child: Padding(
-                                    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 16),
-                                    child: Column(
-                                      mainAxisSize: MainAxisSize.min,
+                      : Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            DecoratedBox(
+                              decoration: const BoxDecoration(
+                                color: Color(0xff435467),
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 16),
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.only(bottom: 10),
+                                      child: DashboardPageSearchTextInputField(
+                                        searchFieldController: widget.searchFieldController,
+                                        enabled: false,
+                                        onTap: () {
+                                          _searchView = true;
+                                          widget.onSearchViewOpened(true);
+                                        },
+                                      ),
+                                    ),
+                                    Row(
                                       children: [
-                                        Padding(
-                                          padding: const EdgeInsets.only(bottom: 10),
-                                          child: DashboardPageSearchTextInputField(
-                                            searchFieldController: widget.searchFieldController,
-                                            enabled: false,
-                                            onTap: () {
-                                              _searchView = false;
-                                              widget.onSearchViewOpened(true);
+                                        Expanded(
+                                          child: DashboardPageAnimatedDropdown(
+                                            label: DashboardPageSearchField.filterButtonLabels.elementAt(0),
+                                            children: DashboardPageSearchField.fuelKinds,
+                                            selectedIndex: () => _selectedFuelKind,
+                                            onItemSelected: (value) {
+                                              switch (value) {
+                                                case 0:
+                                                case 1:
+                                                case 2:
+                                                case 3:
+                                                  MinGOData.setFuelKind(_selectedFuelKind == value ? null : value + 1);
+                                                  MinGOData.mapReferencePoint = widget.mapKey.currentState!.mapController.center;
+                                                  break;
+                                                default:
+                                                  throw 'Not implemented';
+                                              }
                                             },
                                           ),
                                         ),
-                                        Row(
-                                          children: [
-                                            Expanded(
-                                              child: DashboardPageAnimatedDropdown(
-                                                label: DashboardPageSearchField.filterButtonLabels.elementAt(0),
-                                                children: DashboardPageSearchField.fuelKinds,
-                                                selectedIndex: () => _selectedFuelKind,
-                                                onItemSelected: (value) {
-                                                  switch (value) {
-                                                    case 0:
-                                                    case 1:
-                                                    case 2:
-                                                    case 3:
-                                                      MinGOData.mapReferencePoint = widget.mapKey.currentState!.mapController.center;
-                                                      MinGOData.setFuelKind(_selectedFuelKind == value ? null : value + 1);
-                                                      break;
-                                                    default:
-                                                      throw 'Not implemented';
-                                                  }
-                                                },
-                                              ),
-                                            ),
-                                            const SizedBox(width: 10),
-                                            Expanded(
-                                              child: DashboardPageAnimatedDropdown(
-                                                label: DashboardPageSearchField.filterButtonLabels.elementAt(1),
-                                                children: DashboardPageSearchField.distances,
-                                                selectedIndex: () => MinGOData.filterConfig.distanceId,
-                                                onItemSelected: (value) {
-                                                  switch (value) {
-                                                    case 0:
-                                                    case 1:
-                                                    case 2:
-                                                    case 3:
-                                                    case 4:
-                                                      MinGOData.mapReferencePoint = widget.mapKey.currentState!.mapController.center;
-                                                      MinGOData.setDistance(MinGOData.filterConfig.distanceId == value ? null : value);
-                                                      break;
-                                                    default:
-                                                      throw 'Not implemented';
-                                                  }
-                                                },
-                                              ),
-                                            ),
-                                            const SizedBox(width: 10),
-                                            Expanded(
-                                              child: MinGOActionButton(
-                                                label: DashboardPageSearchField.filterButtonLabels.elementAt(2) +
-                                                    (MinGOData.appliedFilters == null ? '' : ' (${MinGOData.appliedFilters})'),
-                                                icon: Icons.percent,
-                                                iconSize: 20,
-                                                onTap: () {
-                                                  _filterView = false;
-                                                  widget.onFilterViewOpened(true);
-                                                },
-                                              ),
-                                            ),
-                                          ],
+                                        const SizedBox(width: 10),
+                                        Expanded(
+                                          child: DashboardPageAnimatedDropdown(
+                                            label: DashboardPageSearchField.filterButtonLabels.elementAt(1),
+                                            children: DashboardPageSearchField.distances,
+                                            selectedIndex: () => MinGOData.filterConfig.distanceId,
+                                            onItemSelected: (value) {
+                                              switch (value) {
+                                                case 0:
+                                                case 1:
+                                                case 2:
+                                                case 3:
+                                                case 4:
+                                                  MinGOData.setDistance(MinGOData.filterConfig.distanceId == value ? null : value);
+                                                  MinGOData.mapReferencePoint = widget.mapKey.currentState!.mapController.center;
+                                                  break;
+                                                default:
+                                                  throw 'Not implemented';
+                                              }
+                                            },
+                                          ),
+                                        ),
+                                        const SizedBox(width: 10),
+                                        Expanded(
+                                          child: MinGOActionButton(
+                                            label: DashboardPageSearchField.filterButtonLabels.elementAt(2) +
+                                                (MinGOData.appliedFilters == null ? '' : ' (${MinGOData.appliedFilters})'),
+                                            icon: Icons.percent,
+                                            iconSize: 20,
+                                            onTap: () {
+                                              _filterView = true;
+                                              widget.onFilterViewOpened(true);
+                                            },
+                                          ),
                                         ),
                                       ],
                                     ),
-                                  ),
+                                  ],
                                 ),
-                                const Padding(
-                                  padding: EdgeInsets.all(14),
-                                  child: Text(
-                                    'Otvorene postaje',
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 18,
-                                    ),
-                                  ),
+                              ),
+                            ),
+                            const Padding(
+                              padding: EdgeInsets.all(14),
+                              child: Text(
+                                'Otvorene postaje',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 18,
                                 ),
-                                if (MinGOData.openStations.isEmpty)
-                                  const Padding(
-                                    padding: EdgeInsets.only(left: 14),
-                                    child: Text('Nema pronađenih postaja'),
-                                  )
-                                else
-                                  for (int i = 0;
-                                      i <
-                                          (MediaQuery.of(context).size.height > 1000
-                                              ? (MinGOData.openStations.length < 3 ? MinGOData.openStations.length : 3)
-                                              : (MinGOData.openStations.length < 2 ? MinGOData.openStations.length : 2));
-                                      i++)
-                                    Expanded(
-                                      child: Padding(
-                                        padding: const EdgeInsets.fromLTRB(6, 0, 6, 6),
-                                        child: InkWell(
-                                          child: DecoratedBox(
-                                            decoration: BoxDecoration(
-                                              color: Colors.white,
-                                              borderRadius: BorderRadius.circular(10),
-                                              border: Border.all(
-                                                color: const Color(0xffE7E7E7),
-                                              ),
-                                            ),
-                                            child: Padding(
-                                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 12),
-                                              child: ConstrainedBox(
-                                                constraints: BoxConstraints(
-                                                  maxHeight: (MediaQuery.of(context).size.width < 1000
-                                                          ? MediaQuery.of(context).size.height / 2
-                                                          : MediaQuery.of(context).size.height > 1000
-                                                              ? 800
-                                                              : 600) /
-                                                      3,
-                                                ),
-                                                child: Column(
-                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                  children: [
-                                                    Row(
-                                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                                      children: [
-                                                        Expanded(
-                                                          child: Column(
-                                                            mainAxisSize: MainAxisSize.min,
-                                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                                            children: [
-                                                              Text(
-                                                                MinGOData.openStations[i].place,
-                                                                style: const TextStyle(fontSize: 12),
-                                                              ),
-                                                              Text(
-                                                                MinGOData.openStations[i].name,
-                                                                style: const TextStyle(
-                                                                  fontWeight: FontWeight.w600,
-                                                                  fontSize: 18,
-                                                                ),
-                                                              ),
-                                                              ProviderInfo(
-                                                                MinGOData.openStations[i],
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        ),
-                                                        const SizedBox(width: 8),
-                                                        Expanded(
-                                                          child: Column(
-                                                            crossAxisAlignment: CrossAxisAlignment.end,
-                                                            children: [
-                                                              DecoratedBox(
-                                                                decoration: BoxDecoration(
-                                                                  borderRadius: BorderRadius.circular(100),
-                                                                  color: StationUtil.timeColor(MinGOData.openStations[i]),
-                                                                ),
-                                                                child: Padding(
-                                                                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-                                                                  child: Text(
-                                                                    StationUtil.isOpen(MinGOData.openStations[i])
-                                                                        ? 'Otvoreno'
-                                                                        : 'Zatvoreno',
-                                                                  ),
-                                                                ),
-                                                              ),
-                                                              const Padding(
-                                                                padding: EdgeInsets.only(top: 16, bottom: 6),
-                                                                child: Text(
-                                                                  'Radno vrijeme',
-                                                                  style: TextStyle(
-                                                                    color: Color(0xffC6C8CC),
-                                                                  ),
-                                                                ),
-                                                              ),
-                                                              Text(
-                                                                StationUtil.formattedTime(MinGOData.openStations[i]),
-                                                                style: const TextStyle(
-                                                                  color: Color(0xffC6C8CC),
-                                                                ),
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                    Row(
-                                                      children: [
-                                                        for (int j = 0; j < 2; j++)
-                                                          Expanded(
-                                                            child: Padding(
-                                                              padding:
-                                                                  i == 0 ? const EdgeInsets.only(right: 4) : const EdgeInsets.only(left: 4),
-                                                              child: FuelPreview(MinGOData.openStations[i].priceList[j]),
-                                                            ),
-                                                          ),
-                                                      ],
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                          onTap: () => Navigator.of(context).push(
-                                            MaterialPageRoute<void>(
-                                              builder: (BuildContext context) => ProviderDetailsRoute(MinGOData.openStations[i]),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                              ],
-                            );
-                          }),
+                              ),
+                            ),
+                            const DashboardPageOpenStations(searchView: true),
+                          ],
+                        ),
             ),
           );
   }
