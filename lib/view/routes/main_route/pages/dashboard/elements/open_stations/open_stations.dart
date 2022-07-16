@@ -67,7 +67,7 @@ class _DashboardPageOpenStationsState extends State<DashboardPageOpenStations> {
                                   ),
                                 ),
                               ),
-                            if (MediaQuery.of(context).size.width < 1000 && _page * 3 < openStations.data!.length)
+                            if (_page * 3 < openStations.data!.length)
                               Padding(
                                 padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
                                 child: Center(
@@ -129,15 +129,10 @@ class _DashboardPageOpenStationsState extends State<DashboardPageOpenStations> {
                       return Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
+                          Wrap(
+                            crossAxisAlignment: WrapCrossAlignment.center,
                             children: [
-                              for (int i = 3;
-                                  i <
-                                      (MediaQuery.of(context).size.width > 1300
-                                          ? ((MinGOData.orderedStations.length - 3) < 7 ? (MinGOData.orderedStations.length - 3) : 7)
-                                          : ((MinGOData.orderedStations.length - 3) < 6 ? (MinGOData.orderedStations.length - 3) : 6));
-                                  i++)
+                              for (int i = 3; i < (openStations.data!.length < length ? openStations.data!.length : length) - 3; i++)
                                 Padding(
                                   padding: const EdgeInsets.symmetric(horizontal: 10),
                                   child: DashboardPageLargeStationPreview(
@@ -146,19 +141,20 @@ class _DashboardPageOpenStationsState extends State<DashboardPageOpenStations> {
                                 ),
                             ],
                           ),
-                          Padding(
-                            padding: const EdgeInsets.only(top: 30),
-                            child: Center(
-                              child: MinGOActionButton(
-                                label: 'Prikaži više',
-                                icon: Icons.chevron_right,
-                                minWidth: true,
-                                onTap: () {
-                                  if (mounted) setState(() => _page++);
-                                },
+                          if (_page * 3 < openStations.data!.length - 3)
+                            Padding(
+                              padding: const EdgeInsets.only(top: 30),
+                              child: Center(
+                                child: MinGOActionButton(
+                                  label: 'Prikaži više',
+                                  icon: Icons.chevron_right,
+                                  minWidth: true,
+                                  onTap: () {
+                                    if (mounted) setState(() => _page++);
+                                  },
+                                ),
                               ),
                             ),
-                          ),
                         ],
                       );
                     },
