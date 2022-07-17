@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mingo/api/auth.dart';
+import 'package:mingo/services/navigator/navigator.dart';
 import 'package:mingo/utils/input_validation/text_validators.dart';
 import 'package:mingo/view/dialogs/dialog_builder.dart';
 import 'package:mingo/view/shared/basic/action_button.dart';
@@ -61,7 +62,7 @@ class _ResendConfirmationDialogState extends State<ResendConfirmationDialog> {
               if (_formKey.currentState!.validate()) {
                 await AuthApi.sendPasswordResetEmail(_emailController.text);
                 Navigator.pop(context);
-                ScaffoldMessenger.of(context).showSnackBar(
+                ScaffoldMessenger.of(AppNavigator.key.currentContext!).showSnackBar(
                   const SnackBar(
                     content: Text('Email sa uputama za resetiranje lozinke je poslan na Vaš mail.'),
                   ),

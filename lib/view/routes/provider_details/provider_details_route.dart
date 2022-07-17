@@ -189,7 +189,7 @@ class _ProviderDetailsRouteState extends State<ProviderDetailsRoute> {
                         ),
                       ),
                       FutureBuilder(
-                        future: PriceTrendsApi.getStationTrends(''),
+                        future: PriceTrendsApi.getStationTrends(widget.station.id),
                         builder: (context, stationPrices) {
                           if (stationPrices.data == null) return const FuelTrendsChartSection();
                           return const FuelTrendsChartSection();

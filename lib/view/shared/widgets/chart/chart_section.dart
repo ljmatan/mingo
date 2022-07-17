@@ -179,24 +179,27 @@ class _FuelTrendsChartSectionState extends State<FuelTrendsChartSection> {
                                 : MediaQuery.of(context).size.height < 1000
                                     ? 700
                                     : 800,
-                        child: charts.TimeSeriesChart(
-                          widget.seriesList ?? FuelTrendsChartSection._seriesList,
-                          dateTimeFactory: _LocalizedDateTimeFactory(
-                            locale: Localizations.localeOf(context),
-                          ),
-                          animate: false,
-                          selectionModels: [
-                            charts.SelectionModelConfig(
-                              changedListener: (model) {
-                                FuelTrendsChartSection.selectedPrices = [];
-                                for (var selection in model.selectedDatum) {
-                                  print(selection.datum.price);
-                                  FuelTrendsChartSection.selectedPrices.add(selection.datum);
-                                }
-                                setState(() {});
-                              },
+                        child: IgnorePointer(
+                          ignoring: true,
+                          child: charts.TimeSeriesChart(
+                            widget.seriesList ?? FuelTrendsChartSection._seriesList,
+                            dateTimeFactory: _LocalizedDateTimeFactory(
+                              locale: Localizations.localeOf(context),
                             ),
-                          ],
+                            animate: false,
+                            selectionModels: [
+                              charts.SelectionModelConfig(
+                                changedListener: (model) {
+                                  FuelTrendsChartSection.selectedPrices = [];
+                                  for (var selection in model.selectedDatum) {
+                                    print(selection.datum.price);
+                                    FuelTrendsChartSection.selectedPrices.add(selection.datum);
+                                  }
+                                  setState(() {});
+                                },
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),

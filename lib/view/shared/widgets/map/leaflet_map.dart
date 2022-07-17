@@ -343,7 +343,7 @@ class LeafletMapState extends State<LeafletMap> with TickerProviderStateMixin, A
               options: MapOptions(
                 controller: mapController,
                 zoom: widget.station != null ? 16 : 11.5,
-                minZoom: _lockedZoom ?? (widget.providersSearch ? null : 12),
+                minZoom: _lockedZoom ?? (widget.providersSearch ? null : (MediaQuery.of(context).size.width < 1000 ? 9 : 9.6)),
                 maxZoom: _lockedZoom ?? (widget.providersSearch ? null : 16),
                 center: widget.station != null
                     ? LatLng(

@@ -1,17 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:mingo/data/mingo.dart';
-import 'package:mingo/models/app_data.dart';
-import 'package:mingo/utils/station/station_util.dart';
-import 'package:mingo/view/routes/main_route/pages/dashboard/bloc/open_stations_controller.dart';
 import 'package:mingo/view/routes/main_route/pages/dashboard/elements/open_stations/open_stations.dart';
 import 'package:mingo/view/routes/main_route/pages/dashboard/elements/search_field/elements/animated_dropdown/animated_dropdown.dart';
 import 'package:mingo/view/routes/main_route/pages/dashboard/elements/search_field/elements/filter_view/filter_view.dart';
 import 'package:mingo/view/routes/main_route/pages/dashboard/elements/search_field/elements/search_view/search_view.dart';
-import 'package:mingo/view/routes/provider_details/provider_details_route.dart';
 import 'package:mingo/view/shared/basic/action_button.dart';
-import 'package:mingo/view/shared/widgets/fuel_preview/fuel_preview.dart';
 import 'package:mingo/view/shared/widgets/map/leaflet_map.dart';
-import 'package:mingo/view/shared/widgets/provider_info/provider_info.dart';
 
 class DashboardPageSearchTextInputField extends StatelessWidget {
   final TextEditingController searchFieldController;
@@ -152,8 +146,8 @@ class DashboardPageSearchFieldState extends State<DashboardPageSearchField> {
                                       case 2:
                                       case 3:
                                         if (_selectedFuelKind != value) {
-                                          MinGOData.mapReferencePoint = widget.mapKey.currentState!.mapController.center;
                                           MinGOData.setFuelKind(value + 1);
+                                          MinGOData.mapReferencePoint = widget.mapKey.currentState!.mapController.center;
                                         } else {
                                           throw 'Already selected';
                                         }
@@ -177,9 +171,10 @@ class DashboardPageSearchFieldState extends State<DashboardPageSearchField> {
                                       case 2:
                                       case 3:
                                       case 4:
+                                        widget.mapKey.currentState!.move(zoom: (14 - value).toDouble());
+                                        // MinGOData.setDistance(MinGOData.filterConfig.distanceId == value ? null : value);
                                         MinGOData.mapReferencePoint = widget.mapKey.currentState!.mapController.center;
-                                        MinGOData.setDistance(MinGOData.filterConfig.distanceId == value ? null : value);
-                                        break;
+                                        throw '2 implementations available';
                                       default:
                                         throw 'Not implemented';
                                     }
@@ -291,9 +286,10 @@ class DashboardPageSearchFieldState extends State<DashboardPageSearchField> {
                                                 case 2:
                                                 case 3:
                                                 case 4:
-                                                  MinGOData.setDistance(MinGOData.filterConfig.distanceId == value ? null : value);
+                                                  widget.mapKey.currentState!.move(zoom: (14 - value).toDouble());
+                                                  // MinGOData.setDistance(MinGOData.filterConfig.distanceId == value ? null : value);
                                                   MinGOData.mapReferencePoint = widget.mapKey.currentState!.mapController.center;
-                                                  break;
+                                                  throw '2 implementations available';
                                                 default:
                                                   throw 'Not implemented';
                                               }

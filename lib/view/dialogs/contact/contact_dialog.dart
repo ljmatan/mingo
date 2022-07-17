@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mingo/api/contact.dart';
+import 'package:mingo/services/navigator/navigator.dart';
 import 'package:mingo/utils/input_validation/text_validators.dart';
 import 'package:mingo/view/dialogs/dialog_builder.dart';
 import 'package:mingo/view/shared/basic/action_button.dart';
@@ -90,7 +91,7 @@ class _ContactDialogState extends State<ContactDialog> {
                 _messageController.text,
               );
               Navigator.pop(context);
-              ScaffoldMessenger.of(context).showSnackBar(
+              ScaffoldMessenger.of(AppNavigator.key.currentContext!).showSnackBar(
                 const SnackBar(
                   content: Text('Poruka poslana. Kontaktirat ćemo Vas u najkraćem mogućem roku.'),
                 ),

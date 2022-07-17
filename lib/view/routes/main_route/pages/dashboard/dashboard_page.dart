@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mingo/api/price_trends.dart';
 import 'package:mingo/data/mingo.dart';
 import 'package:mingo/services/location/location.dart';
 import 'package:mingo/view/routes/main_route/pages/dashboard/elements/open_stations/open_stations.dart';

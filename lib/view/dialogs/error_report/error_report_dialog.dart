@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mingo/api/contact.dart';
 import 'package:mingo/data/mingo.dart';
+import 'package:mingo/services/navigator/navigator.dart';
 import 'package:mingo/utils/input_validation/text_validators.dart';
 import 'package:mingo/view/dialogs/dialog_builder.dart';
 import 'package:mingo/view/shared/basic/action_button.dart';
@@ -130,7 +131,7 @@ class _ErrorReportDialogState extends State<ErrorReportDialog> {
                 _commentController.text,
               );
               Navigator.pop(context);
-              ScaffoldMessenger.of(context).showSnackBar(
+              ScaffoldMessenger.of(AppNavigator.key.currentContext!).showSnackBar(
                 const SnackBar(
                   content: Text('Prijava uspješno poslana.'),
                 ),

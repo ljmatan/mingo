@@ -1,0 +1,1 @@
+{"name":"package","label":"Dart Package","description":"A package containing shared Dart libraries.","categories":["dart"],"entrypoint":"lib/__projectName__.dart"}

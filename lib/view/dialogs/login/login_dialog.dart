@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mingo/api/auth.dart';
+import 'package:mingo/services/navigator/navigator.dart';
 import 'package:mingo/view/dialogs/dialog_builder.dart';
 import 'package:mingo/view/dialogs/forgot_password/forgot_password_dialog.dart';
 import 'package:mingo/view/dialogs/register/register_dialog.dart';
@@ -94,7 +95,7 @@ class _LoginDialogState extends State<LoginDialog> {
               onPressed: () {
                 Navigator.pop(context);
                 showDialog(
-                  context: context,
+                  context: AppNavigator.key.currentContext!,
                   useSafeArea: false,
                   barrierColor: Colors.transparent,
                   builder: (context) => const RegisterDialog(),
@@ -116,7 +117,7 @@ class _LoginDialogState extends State<LoginDialog> {
             onPressed: () {
               Navigator.pop(context);
               showDialog(
-                context: context,
+                context: AppNavigator.key.currentContext!,
                 useSafeArea: false,
                 barrierColor: Colors.transparent,
                 builder: (context) => const ForgotPasswordDialog(),
@@ -135,7 +136,7 @@ class _LoginDialogState extends State<LoginDialog> {
           onPressed: () {
             Navigator.pop(context);
             showDialog(
-              context: context,
+              context: AppNavigator.key.currentContext!,
               useSafeArea: false,
               barrierColor: Colors.transparent,
               builder: (context) => const ResendConfirmationDialog(),
