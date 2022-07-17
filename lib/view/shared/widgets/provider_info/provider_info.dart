@@ -57,6 +57,37 @@ class _ProviderInfoState extends State<ProviderInfo> {
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        if (MinGOData.penalisedProviders.where((e) => e.providerId == widget.station.id).isNotEmpty)
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 5),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Padding(
+                  padding: EdgeInsets.only(right: 8),
+                  child: Icon(
+                    Icons.fiber_manual_record,
+                    color: Color(0xffF75C4B),
+                    size: 16,
+                  ),
+                ),
+                Flexible(
+                  child: Text(
+                    'Posljednji puta ažurirano ' +
+                        MinGOData.penalisedProviders.firstWhere((e) => e.providerId == widget.station.id).lastUpdated.day.toString() +
+                        '.' +
+                        MinGOData.penalisedProviders.firstWhere((e) => e.providerId == widget.station.id).lastUpdated.month.toString() +
+                        '.' +
+                        MinGOData.penalisedProviders.firstWhere((e) => e.providerId == widget.station.id).lastUpdated.year.toString() +
+                        '.',
+                    style: const TextStyle(
+                      color: Color(0xffF75C4B),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
         for (int i = 0; i < _iconIllustrations.length; i++)
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 5),

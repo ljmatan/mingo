@@ -78,16 +78,19 @@ class MinGOSplash extends StatefulWidget {
 
 class _MinGOSplashState extends State<MinGOSplash> {
   static Future _getAppData() async {
-    return await AppDataApi.getAll().then((value) async {
-      MinGOData.priceTrends = await PriceTrendsApi.getAll();
-      debugPrint('Price trends received');
-      await MinGOData.getFuelTypesByStation();
-      debugPrint('App data set');
-      MinGOData.stations = await MinGOData.getStationsInRadius();
-      MinGOData.updateFilteredMarkers();
-      MinGOData.openStations = MinGOData.getOpenStations;
-      debugPrint('Stations filtered');
-    });
+    return await Future.wait([
+      AppDataApi.getAll().then((value) async {
+        MinGOData.priceTrends = await PriceTrendsApi.getAll();
+        debugPrint('Price trends received');
+        await MinGOData.getFuelTypesByStation();
+        debugPrint('App data set');
+        MinGOData.stations = await MinGOData.getStationsInRadius();
+        MinGOData.updateFilteredMarkers();
+        MinGOData.openStations = MinGOData.getOpenStations;
+        debugPrint('Stations filtered');
+      }),
+      PriceTrendsApi.getLatestPricingUpdates(),
+    ]);
   }
 
   Key _futureKey = UniqueKey();

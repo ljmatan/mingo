@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:mingo/models/app_data.dart';
+import 'package:mingo/models/penalised_provider.dart';
 import 'package:mingo/models/price_trend.dart';
 import 'package:mingo/services/location/location.dart';
 import 'package:mingo/utils/station/station_util.dart';
@@ -394,4 +395,6 @@ abstract class MinGOData {
       return null;
     }
   }
+
+  static final List<PenalisedProviderModel> penalisedProviders = [];
 }

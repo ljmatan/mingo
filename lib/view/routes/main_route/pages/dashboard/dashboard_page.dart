@@ -27,6 +27,7 @@ class _DashboardPageState extends State<DashboardPage> {
   void initState() {
     super.initState();
     DashboardPage.searchFieldKey = GlobalKey<DashboardPageSearchFieldState>();
+    // PriceTrendsApi.setAllPricingInfo();
   }
 
   final _mapKey = GlobalKey<LeafletMapState>();

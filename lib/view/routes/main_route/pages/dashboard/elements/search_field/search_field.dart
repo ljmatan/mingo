@@ -171,9 +171,15 @@ class DashboardPageSearchFieldState extends State<DashboardPageSearchField> {
                                       case 2:
                                       case 3:
                                       case 4:
-                                        widget.mapKey.currentState!.move(zoom: (14 - value).toDouble());
+                                        widget.mapKey.currentState!.mapController.move(
+                                          widget.mapKey.currentState!.mapController.center,
+                                          (14 - value).toDouble(),
+                                        );
                                         // MinGOData.setDistance(MinGOData.filterConfig.distanceId == value ? null : value);
-                                        MinGOData.mapReferencePoint = widget.mapKey.currentState!.mapController.center;
+                                        Future.delayed(
+                                          const Duration(milliseconds: 100),
+                                          () => MinGOData.mapReferencePoint = widget.mapKey.currentState!.mapController.center,
+                                        );
                                         throw '2 implementations available';
                                       default:
                                         throw 'Not implemented';
@@ -286,9 +292,15 @@ class DashboardPageSearchFieldState extends State<DashboardPageSearchField> {
                                                 case 2:
                                                 case 3:
                                                 case 4:
-                                                  widget.mapKey.currentState!.move(zoom: (14 - value).toDouble());
+                                                  widget.mapKey.currentState!.mapController.move(
+                                                    widget.mapKey.currentState!.mapController.center,
+                                                    (14 - value).toDouble(),
+                                                  );
                                                   // MinGOData.setDistance(MinGOData.filterConfig.distanceId == value ? null : value);
-                                                  MinGOData.mapReferencePoint = widget.mapKey.currentState!.mapController.center;
+                                                  Future.delayed(
+                                                    const Duration(milliseconds: 100),
+                                                    () => MinGOData.mapReferencePoint = widget.mapKey.currentState!.mapController.center,
+                                                  );
                                                   throw '2 implementations available';
                                                 default:
                                                   throw 'Not implemented';
