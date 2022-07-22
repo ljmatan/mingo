@@ -106,9 +106,9 @@ class _DashboardPageOpenStationsState extends State<DashboardPageOpenStations> {
                       children: [
                         for (int i = 0;
                             i <
-                                (MediaQuery.of(context).size.height > 1000
-                                    ? (openStations.data!.length < 3 ? openStations.data!.length : 3)
-                                    : (openStations.data!.length < 2 ? openStations.data!.length : 2));
+                                (openStations.data!.length < (MediaQuery.of(context).size.width < 1200 ? 2 : 3)
+                                    ? openStations.data!.length
+                                    : (MediaQuery.of(context).size.width < 1200 ? 2 : 3));
                             i++)
                           DashboardPageSearchFieldStationPreview(openStations.data![i]),
                       ],
@@ -132,9 +132,9 @@ class _DashboardPageOpenStationsState extends State<DashboardPageOpenStations> {
                           Wrap(
                             crossAxisAlignment: WrapCrossAlignment.center,
                             children: [
-                              for (int i = 3; i < (openStations.data!.length < length ? openStations.data!.length : length) - 3; i++)
+                              for (int i = 0; i < (openStations.data!.length < length ? openStations.data!.length : length); i++)
                                 Padding(
-                                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                                  padding: const EdgeInsets.all(10),
                                   child: DashboardPageLargeStationPreview(
                                     MinGOData.orderedStations[i],
                                   ),

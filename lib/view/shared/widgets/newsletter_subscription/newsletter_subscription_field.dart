@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:mingo/api/email_subscription.dart';
 import 'package:mingo/data/mingo.dart';
+import 'package:mingo/services/app_tracking_transparency/att.dart';
 import 'package:mingo/utils/input_validation/text_validators.dart';
 import 'package:mingo/view/routes/main_route/pages/dashboard/elements/search_field/search_field.dart';
 import 'package:mingo/view/shared/basic/text_field.dart';
@@ -28,6 +29,7 @@ class _InputFieldsState extends State<_InputFields> {
 
   @override
   Widget build(BuildContext context) {
+    if (!Att.accepted) return const SizedBox();
     return Form(
       key: widget.formKey,
       child: Column(

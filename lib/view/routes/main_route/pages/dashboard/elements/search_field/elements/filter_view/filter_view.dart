@@ -211,7 +211,7 @@ class _DashboardPageFilterViewState extends State<DashboardPageFilterView> {
             Expanded(
               child: DecoratedBox(
                 decoration: const BoxDecoration(color: Colors.white),
-                child: StreamBuilder(
+                child: StreamBuilder<int>(
                   stream: _filterViewController.stream,
                   initialData: 0,
                   builder: (context, selected) {

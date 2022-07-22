@@ -7,7 +7,7 @@ import 'package:mingo/view/routes/main_route/pages/dashboard/elements/search_fie
 import 'package:mingo/view/shared/basic/action_button.dart';
 import 'package:mingo/view/shared/widgets/map/leaflet_map.dart';
 
-class DashboardPageSearchTextInputField extends StatelessWidget {
+class DashboardPageSearchTextInputField extends StatefulWidget {
   final TextEditingController searchFieldController;
   final bool autofocus, enabled;
   final void Function()? onTap;
@@ -21,25 +21,43 @@ class DashboardPageSearchTextInputField extends StatelessWidget {
   });
 
   @override
+  State<DashboardPageSearchTextInputField> createState() => _DashboardPageSearchTextInputFieldState();
+}
+
+class _DashboardPageSearchTextInputFieldState extends State<DashboardPageSearchTextInputField> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      widget.searchFieldController.addListener(() => setState(() {}));
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return InkWell(
       child: TextField(
-        controller: searchFieldController,
-        autofocus: autofocus,
-        enabled: enabled,
+        controller: widget.searchFieldController,
+        autofocus: widget.autofocus,
+        enabled: widget.enabled,
         decoration: InputDecoration(
           filled: true,
           fillColor: Colors.white,
-          suffixIcon: const Icon(Icons.search),
           hintText: 'Upišite lokaciju...',
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(100),
             borderSide: BorderSide.none,
           ),
+          suffixIcon: widget.searchFieldController.text.isNotEmpty
+              ? IconButton(
+                  icon: const Icon(Icons.close),
+                  onPressed: () => widget.searchFieldController.clear(),
+                )
+              : const Icon(Icons.search),
         ),
-        onTap: onTap,
+        onTap: widget.onTap,
       ),
-      onTap: enabled || onTap == null ? null : () => onTap!(),
+      onTap: widget.enabled || widget.onTap == null ? null : () => widget.onTap!(),
     );
   }
 }
@@ -100,17 +118,11 @@ class DashboardPageSearchFieldState extends State<DashboardPageSearchField> {
             ? DashboardPageSearchView(
                 mapKey: widget.mapKey,
                 searchFieldController: widget.searchFieldController,
-                closeSearchView: () {
-                  _searchView = false;
-                  widget.onSearchViewOpened(false);
-                },
+                closeSearchView: () => resetView(),
               )
             : _filterView
                 ? DashboardPageFilterView(
-                    closeFilterView: () {
-                      _filterView = false;
-                      widget.onFilterViewOpened(false);
-                    },
+                    closeFilterView: () => resetView(),
                   )
                 : DecoratedBox(
                     decoration: const BoxDecoration(
@@ -173,7 +185,7 @@ class DashboardPageSearchFieldState extends State<DashboardPageSearchField> {
                                       case 4:
                                         widget.mapKey.currentState!.mapController.move(
                                           widget.mapKey.currentState!.mapController.center,
-                                          (14 - value).toDouble(),
+                                          (20 - value).toDouble(),
                                         );
                                         // MinGOData.setDistance(MinGOData.filterConfig.distanceId == value ? null : value);
                                         Future.delayed(
@@ -209,11 +221,7 @@ class DashboardPageSearchFieldState extends State<DashboardPageSearchField> {
                   )
         : SizedBox(
             width: MediaQuery.of(context).size.width * (2 / 5),
-            height: MediaQuery.of(context).size.width < 1000
-                ? MediaQuery.of(context).size.height / 2
-                : MediaQuery.of(context).size.height > 1000
-                    ? 800
-                    : 600,
+            height: MediaQuery.of(context).size.height > 1000 ? 860 : 640,
             child: DecoratedBox(
               decoration: const BoxDecoration(
                 color: Color(0xffF9F9F9),
@@ -222,17 +230,11 @@ class DashboardPageSearchFieldState extends State<DashboardPageSearchField> {
                   ? DashboardPageSearchView(
                       mapKey: widget.mapKey,
                       searchFieldController: widget.searchFieldController,
-                      closeSearchView: () {
-                        _searchView = false;
-                        widget.onSearchViewOpened(false);
-                      },
+                      closeSearchView: () => resetView(),
                     )
                   : _filterView
                       ? DashboardPageFilterView(
-                          closeFilterView: () {
-                            _searchView = false;
-                            widget.onFilterViewOpened(false);
-                          },
+                          closeFilterView: () => resetView(),
                         )
                       : Column(
                           crossAxisAlignment: CrossAxisAlignment.start,

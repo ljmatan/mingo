@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:mingo/services/storage/cache.dart';
@@ -108,7 +111,7 @@ class _MinGONavigationBarState extends State<MinGONavigationBar> {
                           MainRoutePageController.navigateTo(0);
                         },
                       ),
-                      if (CacheManager.instance.getString('token') == null)
+                      if ((kIsWeb || !Platform.isIOS) && CacheManager.instance.getString('token') == null)
                         Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [

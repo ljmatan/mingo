@@ -333,7 +333,7 @@ class LeafletMapState extends State<LeafletMap> with TickerProviderStateMixin, A
     return IgnorePointer(
       ignoring: widget.station != null,
       child: Listener(
-        child: StreamBuilder(
+        child: StreamBuilder<List<Station>>(
           stream: MapMarkersController.stream,
           initialData: MinGOData.stations,
           builder: (context, stations) {
@@ -344,7 +344,12 @@ class LeafletMapState extends State<LeafletMap> with TickerProviderStateMixin, A
                 controller: mapController,
                 zoom: widget.station != null ? 16 : 11.5,
                 minZoom: _lockedZoom ?? (widget.providersSearch ? null : (MediaQuery.of(context).size.width < 1000 ? 9 : 9.6)),
-                maxZoom: _lockedZoom ?? (widget.providersSearch ? null : 16),
+                maxZoom: _lockedZoom ??
+                    (widget.providersSearch
+                        ? null
+                        : MediaQuery.of(context).size.width < 1000
+                            ? 16
+                            : 20),
                 center: widget.station != null
                     ? LatLng(
                         double.parse(widget.station!.lat!),
@@ -354,6 +359,7 @@ class LeafletMapState extends State<LeafletMap> with TickerProviderStateMixin, A
                         LocationServices.locationData?.latitude ?? MinGOData.mapFocusLocation.latitude,
                         LocationServices.locationData?.longitude ?? MinGOData.mapFocusLocation.longitude,
                       ),
+                interactiveFlags: InteractiveFlag.pinchZoom | InteractiveFlag.drag,
                 onPositionChanged: (position, _) {
                   final distanceFromLastRecorded = LocationServices.getDistance(
                     position.center!.latitude,

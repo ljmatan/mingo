@@ -126,9 +126,7 @@ class AboutPage extends StatelessWidget {
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 20),
                       child: Text(
-                        'Ukoliko pretražujete mjesto koje ima identičan naziv s nekim drugim mjestom (npr Ivanec), u adresu '
-                        'napišite i županiju u ovom formatu: Ivanec, Varaždinska županija Postaje možete pretraživati i prema '
-                        'njihovim dodatnim uslugama. Kliknite Detaljno filtriranje ispod mape i pronađite postaje s dodatnim '
+                        'Kliknite Detaljno filtriranje i pronađite postaje s dodatnim '
                         'karakteristikama, ponudama i uslugama\n\n'
                         '· Ukoliko želite primati obavijesti o cijenama goriva na email, prijavite se pomoću forme na '
                         'dnu naslovne stranice\n'

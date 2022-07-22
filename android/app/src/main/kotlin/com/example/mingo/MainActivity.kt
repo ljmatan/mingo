@@ -1,4 +1,4 @@
-package com.example.mingo
+package mzoe.gor
 
 import io.flutter.embedding.android.FlutterActivity
 

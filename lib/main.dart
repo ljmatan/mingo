@@ -8,6 +8,7 @@ import 'package:mingo/api/client.dart';
 import 'package:mingo/api/data.dart';
 import 'package:mingo/api/price_trends.dart';
 import 'package:mingo/data/mingo.dart';
+import 'package:mingo/services/app_tracking_transparency/att.dart';
 import 'package:mingo/services/device_info/device_info.dart';
 import 'package:mingo/services/navigator/navigator.dart';
 import 'package:mingo/services/storage/cache.dart';
@@ -41,8 +42,10 @@ void main() async {
   try {
     await DeviceInfo.init();
   } catch (e) {
-    // Do nothing
+    debugPrint('$e');
   }
+
+  await Att.init();
 
   runApp(const MinGO());
 }
@@ -88,8 +91,9 @@ class _MinGOSplashState extends State<MinGOSplash> {
         MinGOData.updateFilteredMarkers();
         MinGOData.openStations = MinGOData.getOpenStations;
         debugPrint('Stations filtered');
+        print(MinGOData.instance.options);
       }),
-      PriceTrendsApi.getLatestPricingUpdates(),
+      // PriceTrendsApi.getLatestPricingUpdates(),
     ]);
   }
 

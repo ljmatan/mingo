@@ -9,7 +9,7 @@ import 'package:charts_flutter/flutter.dart' as charts;
 class _PriceInfo extends StatefulWidget {
   final int index;
 
-  const _PriceInfo(this.index);
+  const _PriceInfo(this.index, {super.key});
 
   @override
   State<_PriceInfo> createState() => _PriceInfoState();
@@ -21,12 +21,14 @@ class _PriceInfoState extends State<_PriceInfo> {
   @override
   void initState() {
     super.initState();
-    priceInHrk = (FuelTrendsChartSection.selectedPrices.isEmpty ? MinGOData.priceTrends : FuelTrendsChartSection.selectedPrices)
-        .where(
-          (e) => e.fuelId == FuelTrendsChartSection.fuelIds.elementAt(widget.index),
-        )
-        .last
-        .price;
+    priceInHrk = FuelTrendsChartSection.selectedPrices.isNotEmpty
+        ? FuelTrendsChartSection.selectedPrices[widget.index].price
+        : MinGOData.priceTrends
+            .where(
+              (e) => e.fuelId == FuelTrendsChartSection.fuelIds.elementAt(widget.index),
+            )
+            .last
+            .price;
     priceInEur = priceInHrk / 7.5345;
   }
 
@@ -44,7 +46,14 @@ class _PriceInfoState extends State<_PriceInfo> {
                 borderRadius: BorderRadius.circular(4),
                 color: Color(
                   int.parse(
-                    FuelTrendsChartSection.chartColors.elementAt(widget.index).hexString.replaceAll('#', '0xff'),
+                    FuelTrendsChartSection.chartColors
+                        .elementAt(
+                          FuelTrendsChartSection.selectedPrices.isEmpty
+                              ? widget.index
+                              : FuelTrendsChartSection.selectedPrices[widget.index].fuelId - 1,
+                        )
+                        .hexString
+                        .replaceAll('#', '0xff'),
                   ),
                 ),
               ),
@@ -68,7 +77,7 @@ class _PriceInfoState extends State<_PriceInfo> {
                                 (DateTime.now().year < 2023 || DateTime.now().year == 2023 && DateTime.now().month < 6 ? '  •  ' : '')
                             : '') +
                         (DateTime.now().year < 2023 || DateTime.now().year == 2023 && DateTime.now().month < 6
-                            ? '  ' + priceInHrk.toString() + ' HRK / L'
+                            ? '  ' + priceInHrk.toStringAsFixed(2) + ' HRK / L'
                             : '') +
                         (DateTime.now().year < 2023 ? '  •  ' + priceInEur.toStringAsFixed(2) + ' EUR / L' : ''),
                     style: Theme.of(context).textTheme.bodyText2!,
@@ -96,13 +105,11 @@ class _LocalizedDateTimeFactory extends charts.LocalDateTimeFactory {
 }
 
 class FuelTrendsChartSection extends StatefulWidget {
-  static List<PriceTrendModel> selectedPrices = [];
-
-  final List<charts.Series<PriceTrendModel, DateTime>>? seriesList;
+  final List<PriceTrendModel>? data;
 
   const FuelTrendsChartSection({
     super.key,
-    this.seriesList,
+    this.data,
   });
 
   static const fuelIds = {1, 2, 3, 4};
@@ -121,28 +128,84 @@ class FuelTrendsChartSection extends StatefulWidget {
     charts.MaterialPalette.indigo.shadeDefault,
   ];
 
-  static final List<charts.Series<PriceTrendModel, DateTime>> _seriesList = [
-    for (int i = 0; i < fuelIds.length; i++)
-      charts.Series<PriceTrendModel, DateTime>(
-        id: 'Trends',
-        colorFn: (_, __) => chartColors[i],
-        domainFn: (PriceTrendModel gas, _) => gas.lastUpdated,
-        measureFn: (PriceTrendModel gas, _) => gas.price,
-        data: MinGOData.priceTrends
-            .where(
-              (e) => e.fuelId == fuelIds.elementAt(i),
-            )
-            .toList(),
-      ),
-  ];
+  static List<PriceTrendModel> selectedPrices = [];
 
   @override
   State<FuelTrendsChartSection> createState() => _FuelTrendsChartSectionState();
 }
 
 class _FuelTrendsChartSectionState extends State<FuelTrendsChartSection> {
+  late List<charts.Series<PriceTrendModel, DateTime>> _seriesList;
+
+  final _gasTypes = <int>{};
+  final _filtered = <List<PriceTrendModel>>[];
+
+  double _min = 100, _max = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.data != null) {
+      try {
+        for (var log in widget.data!) {
+          _gasTypes.add(log.fuelId);
+        }
+      } catch (e) {
+        for (var log in widget.data!) {
+          _gasTypes.add(log.fuelId);
+        }
+      }
+      for (var gasType in _gasTypes) {
+        _filtered.add(widget.data!.where((e) => e.fuelId == gasType).toList());
+      }
+      if (_filtered.where((e) => e.isNotEmpty).isEmpty) {
+        _seriesList = [];
+        return;
+      }
+      _gasTypes.clear();
+      for (var data in _filtered) {
+        for (var entry in data) {
+          _gasTypes.add(entry.fuelId);
+          if (entry.price < _min) _min = entry.price;
+          if (entry.price > _max) _max = entry.price;
+        }
+      }
+      _seriesList = <charts.Series<PriceTrendModel, DateTime>>[
+        for (var i = 0; i < _filtered.length; i++)
+          charts.Series<PriceTrendModel, DateTime>(
+            id: 'Trends',
+            colorFn: (_, __) => FuelTrendsChartSection.chartColors[i],
+            domainFn: (PriceTrendModel gas, _) => gas.lastUpdated,
+            measureFn: (PriceTrendModel gas, _) => gas.price,
+            data: _filtered[i],
+          ),
+      ];
+    } else {
+      _seriesList = <charts.Series<PriceTrendModel, DateTime>>[
+        for (int i = 0;
+            i <
+                ((FuelTrendsChartSection.selectedPrices.isNotEmpty ? FuelTrendsChartSection.selectedPrices : FuelTrendsChartSection.fuelIds)
+                        as Iterable)
+                    .length;
+            i++)
+          charts.Series<PriceTrendModel, DateTime>(
+            id: 'Trends',
+            colorFn: (_, __) => FuelTrendsChartSection.chartColors[i],
+            domainFn: (PriceTrendModel gas, _) => gas.lastUpdated,
+            measureFn: (PriceTrendModel gas, _) => gas.price,
+            data: MinGOData.priceTrends
+                .where(
+                  (e) => e.fuelId == FuelTrendsChartSection.fuelIds.elementAt(i),
+                )
+                .toList(),
+          ),
+      ];
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    if (_seriesList.isEmpty) return const SizedBox();
     return DecoratedBox(
       decoration: BoxDecoration(
         color: Theme.of(context).primaryColor,
@@ -179,34 +242,41 @@ class _FuelTrendsChartSectionState extends State<FuelTrendsChartSection> {
                                 : MediaQuery.of(context).size.height < 1000
                                     ? 700
                                     : 800,
-                        child: IgnorePointer(
-                          ignoring: true,
-                          child: charts.TimeSeriesChart(
-                            widget.seriesList ?? FuelTrendsChartSection._seriesList,
-                            dateTimeFactory: _LocalizedDateTimeFactory(
-                              locale: Localizations.localeOf(context),
-                            ),
-                            animate: false,
-                            selectionModels: [
-                              charts.SelectionModelConfig(
-                                changedListener: (model) {
-                                  FuelTrendsChartSection.selectedPrices = [];
-                                  for (var selection in model.selectedDatum) {
-                                    print(selection.datum.price);
-                                    FuelTrendsChartSection.selectedPrices.add(selection.datum);
-                                  }
-                                  setState(() {});
-                                },
-                              ),
-                            ],
+                        child: charts.TimeSeriesChart(
+                          _seriesList,
+                          dateTimeFactory: _LocalizedDateTimeFactory(
+                            locale: Localizations.localeOf(context),
                           ),
+                          animate: false,
+                          selectionModels: [
+                            charts.SelectionModelConfig(
+                              changedListener: (model) {
+                                FuelTrendsChartSection.selectedPrices = [];
+                                for (var selection in model.selectedDatum) {
+                                  if (FuelTrendsChartSection.selectedPrices.where((e) => e.fuelId == selection.datum.fuelId).isEmpty) {
+                                    FuelTrendsChartSection.selectedPrices.add(selection.datum);
+                                  } else {
+                                    FuelTrendsChartSection.selectedPrices.firstWhere((e) => e.fuelId == selection.datum.fuelId).price =
+                                        (FuelTrendsChartSection.selectedPrices.firstWhere((e) => e.fuelId == selection.datum.fuelId).price +
+                                                selection.datum.price) /
+                                            2;
+                                  }
+                                }
+                                FuelTrendsChartSection.selectedPrices.sort((a, b) => a.fuelId.compareTo(b.fuelId));
+                                setState(() {});
+                              },
+                            ),
+                          ],
                         ),
                       ),
                     ),
                     for (int i = 0;
                         i < (FuelTrendsChartSection.selectedPrices.isEmpty ? 4 : FuelTrendsChartSection.selectedPrices.length);
                         i++)
-                      _PriceInfo(i),
+                      _PriceInfo(
+                        i,
+                        key: UniqueKey(),
+                      ),
                     const SizedBox(height: 8),
                   ],
                 ),

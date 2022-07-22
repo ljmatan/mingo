@@ -142,7 +142,7 @@ class _DashboardPageSearchViewState extends State<DashboardPageSearchView> {
                         ),
                       ),
                     ),
-                    StreamBuilder(
+                    StreamBuilder<String>(
                       stream: _searchTermConroller.stream,
                       initialData: widget.searchFieldController.text,
                       builder: (context, searchTerm) {

@@ -106,7 +106,10 @@ class _MinGOActionButtonState extends State<MinGOActionButton> {
                                                         : null,
                                               ),
                                             ),
-                                            if (widget.minWidth) const SizedBox(width: 60),
+                                            if (widget.minWidth)
+                                              MediaQuery.of(context).size.width <= 400
+                                                  ? const SizedBox(width: 30)
+                                                  : const SizedBox(width: 60),
                                             Icon(
                                               widget.icon,
                                               size: widget.iconSize,

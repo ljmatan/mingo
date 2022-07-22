@@ -81,7 +81,9 @@ class _DashboardPageSearchFieldStationPreviewState extends State<DashboardPageSe
                                 style: const TextStyle(
                                   fontWeight: FontWeight.w600,
                                   fontSize: 18,
+                                  overflow: TextOverflow.ellipsis,
                                 ),
+                                maxLines: MediaQuery.of(context).size.width < 1000 || MediaQuery.of(context).size.width > 1200 ? null : 1,
                               ),
                               ProviderInfo(
                                 widget.station,

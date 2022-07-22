@@ -23,7 +23,7 @@
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>13</string>
+	<string>17</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSLocationUsageDescription</key>
@@ -53,5 +53,7 @@
 	<false/>
 	<key>FLTEnableImpeller</key>
   	<false/>
+	<key>NSUserTrackingUsageDescription</key>
+	<string>Pristup aplikaciji za dijeljenje osobnih podataka sa našim partnerima</string>
 </dict>
 </plist>

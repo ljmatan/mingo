@@ -37,8 +37,8 @@ class _DashboardPageMapState extends State<DashboardPageMap> {
       height: MediaQuery.of(context).size.width < 1000
           ? MediaQuery.of(context).size.height / 2
           : MediaQuery.of(context).size.height > 1000
-              ? 800
-              : 600,
+              ? 860
+              : 640,
       child: Stack(
         children: [
           Listener(

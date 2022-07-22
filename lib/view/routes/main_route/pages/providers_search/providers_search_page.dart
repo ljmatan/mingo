@@ -214,7 +214,7 @@ class _ProvidersSearchPageState extends State<ProvidersSearchPage> with WidgetsB
                             padding: const EdgeInsets.only(right: 6),
                             child: Stack(
                               children: [
-                                StreamBuilder(
+                                StreamBuilder<bool>(
                                   stream: _resultsViewController.stream,
                                   initialData: _textInputFocusNode.hasFocus,
                                   builder: (context, hasFocus) {
@@ -422,7 +422,7 @@ class _ProvidersSearchPageState extends State<ProvidersSearchPage> with WidgetsB
                                         padding: const EdgeInsets.only(right: 6),
                                         child: Stack(
                                           children: [
-                                            StreamBuilder(
+                                            StreamBuilder<bool>(
                                               stream: _resultsViewController.stream,
                                               initialData: _textInputFocusNode.hasFocus,
                                               builder: (context, hasFocus) {
