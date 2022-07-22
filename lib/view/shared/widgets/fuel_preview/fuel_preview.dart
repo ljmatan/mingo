@@ -74,10 +74,11 @@ class FuelPreview extends StatelessWidget {
           child: Row(
             mainAxisSize: minAxisSize ? MainAxisSize.min : MainAxisSize.max,
             children: [
+              if (minAxisSize) const SizedBox(width: 20),
               Padding(
-                padding: const EdgeInsets.only(right: 8),
+                padding: minAxisSize ? const EdgeInsets.only(right: 16) : const EdgeInsets.only(right: 8),
                 child: CircleAvatar(
-                  radius: 19,
+                  radius: 22,
                   backgroundColor: _fuelColor(price.fuelId),
                   child: Text(
                     _fuelMarking(price.fuelId),
@@ -171,6 +172,7 @@ class FuelPreview extends StatelessWidget {
                     ),
                 ],
               ),
+              if (minAxisSize) const SizedBox(width: 20),
             ],
           ),
         ),

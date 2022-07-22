@@ -106,9 +106,9 @@ class _DashboardPageOpenStationsState extends State<DashboardPageOpenStations> {
                       children: [
                         for (int i = 0;
                             i <
-                                (openStations.data!.length < (MediaQuery.of(context).size.width < 1200 ? 2 : 3)
+                                (openStations.data!.length < (MediaQuery.of(context).size.height < 1200 ? 2 : 3)
                                     ? openStations.data!.length
-                                    : (MediaQuery.of(context).size.width < 1200 ? 2 : 3));
+                                    : (MediaQuery.of(context).size.height < 1200 ? 2 : 3));
                             i++)
                           DashboardPageSearchFieldStationPreview(openStations.data![i]),
                       ],

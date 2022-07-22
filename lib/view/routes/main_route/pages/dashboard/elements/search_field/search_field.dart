@@ -221,7 +221,7 @@ class DashboardPageSearchFieldState extends State<DashboardPageSearchField> {
                   )
         : SizedBox(
             width: MediaQuery.of(context).size.width * (2 / 5),
-            height: MediaQuery.of(context).size.height > 1000 ? 860 : 640,
+            height: MediaQuery.of(context).size.height > 1200 ? 1000 : 800,
             child: DecoratedBox(
               decoration: const BoxDecoration(
                 color: Color(0xffF9F9F9),

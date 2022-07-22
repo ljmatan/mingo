@@ -75,6 +75,7 @@ class _ProviderDetailsRouteState extends State<ProviderDetailsRoute> {
                               ? 3
                               : 4;
                 }
+                value.removeWhere((e) => e.lastUpdated.year < 2010);
                 return value;
               }),
               builder: (context, trends) {

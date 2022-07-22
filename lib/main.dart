@@ -91,7 +91,6 @@ class _MinGOSplashState extends State<MinGOSplash> {
         MinGOData.updateFilteredMarkers();
         MinGOData.openStations = MinGOData.getOpenStations;
         debugPrint('Stations filtered');
-        print(MinGOData.instance.options);
       }),
       // PriceTrendsApi.getLatestPricingUpdates(),
     ]);
