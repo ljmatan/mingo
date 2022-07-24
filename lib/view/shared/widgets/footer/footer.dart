@@ -94,16 +94,19 @@ class Footer extends StatelessWidget {
                       ),
                     ),
                   ),
-                  ConstrainedBox(
-                    constraints: const BoxConstraints(maxWidth: 300),
-                    child: MinGOActionButton(
-                      label: 'Kontaktirajte nas',
-                      icon: Icons.chevron_right,
-                      onTap: () => showDialog(
-                        context: context,
-                        useSafeArea: false,
-                        barrierColor: Colors.transparent,
-                        builder: (context) => const ContactDialog(),
+                  Padding(
+                    padding: EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom),
+                    child: ConstrainedBox(
+                      constraints: const BoxConstraints(maxWidth: 300),
+                      child: MinGOActionButton(
+                        label: 'Kontaktirajte nas',
+                        icon: Icons.chevron_right,
+                        onTap: () => showDialog(
+                          context: context,
+                          useSafeArea: false,
+                          barrierColor: Colors.transparent,
+                          builder: (context) => const ContactDialog(),
+                        ),
                       ),
                     ),
                   ),

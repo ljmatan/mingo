@@ -1,7 +1,10 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mingo/data/mingo.dart';
 import 'package:mingo/models/price_trend.dart';
+import 'package:mingo/services/app_tracking_transparency/att.dart';
 import 'package:mingo/view/routes/main_route/pages/dashboard/elements/search_field/search_field.dart';
 import 'package:mingo/view/shared/widgets/title/title.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
@@ -128,7 +131,7 @@ class FuelTrendsChartSection extends StatefulWidget {
     charts.MaterialPalette.indigo.shadeDefault,
   ];
 
-  static List<PriceTrendModel> selectedPrices = [];
+  static final List<PriceTrendModel> selectedPrices = [];
 
   @override
   State<FuelTrendsChartSection> createState() => _FuelTrendsChartSectionState();
@@ -137,49 +140,29 @@ class FuelTrendsChartSection extends StatefulWidget {
 class _FuelTrendsChartSectionState extends State<FuelTrendsChartSection> {
   late List<charts.Series<PriceTrendModel, DateTime>> _seriesList;
 
-  final _gasTypes = <int>{};
   final _filtered = <List<PriceTrendModel>>[];
-
-  double _min = 100, _max = 0;
 
   @override
   void initState() {
     super.initState();
     if (widget.data != null) {
-      try {
-        for (var log in widget.data!) {
-          _gasTypes.add(log.fuelId);
-        }
-      } catch (e) {
-        for (var log in widget.data!) {
-          _gasTypes.add(log.fuelId);
-        }
-      }
-      for (var gasType in _gasTypes) {
-        _filtered.add(widget.data!.where((e) => e.fuelId == gasType).toList());
-      }
-      if (_filtered.where((e) => e.isNotEmpty).isEmpty) {
-        _seriesList = [];
-        return;
-      }
-      _gasTypes.clear();
-      for (var data in _filtered) {
-        for (var entry in data) {
-          _gasTypes.add(entry.fuelId);
-          if (entry.price < _min) _min = entry.price;
-          if (entry.price > _max) _max = entry.price;
-        }
+      for (var gasType in {1, 2, 3, 4}) {
+        final trends = widget.data!.where((e) => e.fuelId == gasType);
+        if (trends.isNotEmpty) _filtered.add(trends.toList());
       }
       _seriesList = <charts.Series<PriceTrendModel, DateTime>>[
         for (var i = 0; i < _filtered.length; i++)
           charts.Series<PriceTrendModel, DateTime>(
             id: 'Trends',
-            colorFn: (_, __) => FuelTrendsChartSection.chartColors[i],
+            colorFn: (_, __) => FuelTrendsChartSection.chartColors[_filtered[i].first.fuelId - 1],
             domainFn: (PriceTrendModel gas, _) => gas.lastUpdated,
             measureFn: (PriceTrendModel gas, _) => gas.price,
             data: _filtered[i],
           ),
       ];
+      for (var trend in _filtered) {
+        FuelTrendsChartSection.selectedPrices.add(trend.last);
+      }
     } else {
       _seriesList = <charts.Series<PriceTrendModel, DateTime>>[
         for (int i = 0;
@@ -203,6 +186,8 @@ class _FuelTrendsChartSectionState extends State<FuelTrendsChartSection> {
     }
   }
 
+  final _selectedDateController = StreamController<DateTime?>.broadcast();
+
   @override
   Widget build(BuildContext context) {
     if (_seriesList.isEmpty) return const SizedBox();
@@ -211,8 +196,11 @@ class _FuelTrendsChartSectionState extends State<FuelTrendsChartSection> {
         color: Theme.of(context).primaryColor,
       ),
       child: Padding(
-        padding:
-            MediaQuery.of(context).size.width < 1000 ? const EdgeInsets.symmetric(vertical: 30) : const EdgeInsets.symmetric(vertical: 60),
+        padding: MediaQuery.of(context).size.width < 1000
+            ? Att.accepted
+                ? const EdgeInsets.symmetric(vertical: 30)
+                : const EdgeInsets.only(top: 30, bottom: 10)
+            : const EdgeInsets.symmetric(vertical: 60),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -233,7 +221,9 @@ class _FuelTrendsChartSectionState extends State<FuelTrendsChartSection> {
                   crossAxisAlignment: MediaQuery.of(context).size.width < 1000 ? CrossAxisAlignment.start : CrossAxisAlignment.center,
                   children: [
                     Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 26),
+                      padding: MediaQuery.of(context).size.width < 1000
+                          ? const EdgeInsets.symmetric(horizontal: 14, vertical: 20)
+                          : const EdgeInsets.symmetric(horizontal: 14, vertical: 26),
                       child: LimitedBox(
                         maxHeight: MediaQuery.of(context).size.width < 600
                             ? 300
@@ -251,18 +241,23 @@ class _FuelTrendsChartSectionState extends State<FuelTrendsChartSection> {
                           selectionModels: [
                             charts.SelectionModelConfig(
                               changedListener: (model) {
-                                FuelTrendsChartSection.selectedPrices = [];
+                                FuelTrendsChartSection.selectedPrices.clear();
                                 for (var selection in model.selectedDatum) {
                                   if (FuelTrendsChartSection.selectedPrices.where((e) => e.fuelId == selection.datum.fuelId).isEmpty) {
                                     FuelTrendsChartSection.selectedPrices.add(selection.datum);
-                                  } else {
-                                    FuelTrendsChartSection.selectedPrices.firstWhere((e) => e.fuelId == selection.datum.fuelId).price =
-                                        (FuelTrendsChartSection.selectedPrices.firstWhere((e) => e.fuelId == selection.datum.fuelId).price +
-                                                selection.datum.price) /
-                                            2;
                                   }
                                 }
                                 FuelTrendsChartSection.selectedPrices.sort((a, b) => a.fuelId.compareTo(b.fuelId));
+                                try {
+                                  _selectedDateController.add(model.selectedDatum.first.datum.lastUpdated);
+                                } catch (e) {
+                                  _selectedDateController.add(null);
+                                }
+                                if (widget.data != null && FuelTrendsChartSection.selectedPrices.isEmpty) {
+                                  for (var trend in _filtered) {
+                                    FuelTrendsChartSection.selectedPrices.add(trend.last);
+                                  }
+                                }
                                 setState(() {});
                               },
                             ),
@@ -270,8 +265,29 @@ class _FuelTrendsChartSectionState extends State<FuelTrendsChartSection> {
                         ),
                       ),
                     ),
+                    StreamBuilder<DateTime?>(
+                      stream: _selectedDateController.stream,
+                      builder: (context, selectedDate) {
+                        if (selectedDate.data == null) return const SizedBox();
+                        return Padding(
+                          padding: const EdgeInsets.fromLTRB(20, 0, 20, 16),
+                          child: Text(
+                            selectedDate.data!.day.toString() +
+                                '.' +
+                                selectedDate.data!.month.toString() +
+                                '.' +
+                                selectedDate.data!.year.toString() +
+                                '.',
+                            style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
+                          ),
+                        );
+                      },
+                    ),
                     for (int i = 0;
-                        i < (FuelTrendsChartSection.selectedPrices.isEmpty ? 4 : FuelTrendsChartSection.selectedPrices.length);
+                        i <
+                            (FuelTrendsChartSection.selectedPrices.isEmpty
+                                ? _seriesList.length
+                                : FuelTrendsChartSection.selectedPrices.length);
                         i++)
                       _PriceInfo(
                         i,
@@ -291,6 +307,7 @@ class _FuelTrendsChartSectionState extends State<FuelTrendsChartSection> {
   @override
   void dispose() {
     FuelTrendsChartSection.selectedPrices.clear();
+    _selectedDateController.close();
     super.dispose();
   }
 }

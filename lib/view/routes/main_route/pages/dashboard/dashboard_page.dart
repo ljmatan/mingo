@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:mingo/api/price_trends.dart';
 import 'package:mingo/data/mingo.dart';
 import 'package:mingo/services/location/location.dart';
 import 'package:mingo/view/routes/main_route/pages/dashboard/elements/open_stations/open_stations.dart';
@@ -27,7 +26,6 @@ class _DashboardPageState extends State<DashboardPage> {
   void initState() {
     super.initState();
     DashboardPage.searchFieldKey = GlobalKey<DashboardPageSearchFieldState>();
-    // PriceTrendsApi.setAllPricingInfo();
   }
 
   final _mapKey = GlobalKey<LeafletMapState>();
@@ -113,7 +111,7 @@ class _DashboardPageState extends State<DashboardPage> {
                       ),
                     ],
                   ),
-                  if (MinGOData.openStations.length - 3 > 0)
+                  if (MinGOData.orderedStations.length - 3 > 0)
                     const Center(
                       child: DecoratedBox(
                         decoration: BoxDecoration(color: Colors.white),
@@ -147,7 +145,7 @@ class _DashboardPageState extends State<DashboardPage> {
 
   @override
   void deactivate() {
-    DashboardPage.searchFieldKey!.currentState?.resetView();
+    DashboardPage.searchFieldKey?.currentState?.resetView();
     MinGOData.mapReferencePoint = LatLng(
       LocationServices.locationData?.latitude ?? 45.8150,
       LocationServices.locationData?.latitude ?? 15.9819,

@@ -103,10 +103,13 @@ class _DashboardPageMapState extends State<DashboardPageMap> {
                                   switch (i) {
                                     case 0:
                                     case 1:
-                                      _mapKey.currentState!.move(
-                                        zoom: i == 0 ? .5 : -.5,
-                                        absoluteZoomValue: false,
-                                      );
+                                      final newZoomValue = _mapKey.currentState!.mapController.zoom + (i == 0 ? .5 : -.5);
+                                      if (newZoomValue > 9) {
+                                        _mapKey.currentState!.mapController.move(
+                                          _mapKey.currentState!.mapController.center,
+                                          newZoomValue,
+                                        );
+                                      }
                                       break;
                                     case 2:
                                       if (!_gpsLoading) {

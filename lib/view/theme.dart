@@ -37,11 +37,12 @@ abstract class MinGOTheme {
       ),
     ),
     snackBarTheme: const SnackBarThemeData(
-      elevation: 0,
+      elevation: 1,
       behavior: SnackBarBehavior.floating,
-      backgroundColor: _primaryColor,
+      backgroundColor: Colors.white,
       contentTextStyle: TextStyle(
-        color: Colors.white,
+        fontWeight: FontWeight.w600,
+        color: Colors.black,
         fontSize: 18,
       ),
     ),

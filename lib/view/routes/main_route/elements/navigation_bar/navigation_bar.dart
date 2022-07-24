@@ -49,7 +49,7 @@ class _MinGONavigationBarState extends State<MinGONavigationBar> {
                       Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          if (CacheManager.instance.getString('token') == null)
+                          if (CacheManager.instance.getString('token') == null && (kIsWeb || !Platform.isIOS))
                             Padding(
                               padding: const EdgeInsets.only(right: 10),
                               child: InkWell(

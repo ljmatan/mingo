@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:mingo/api/email_subscription.dart';
-import 'package:mingo/data/mingo.dart';
 import 'package:mingo/services/app_tracking_transparency/att.dart';
 import 'package:mingo/utils/input_validation/text_validators.dart';
-import 'package:mingo/view/routes/main_route/pages/dashboard/elements/search_field/search_field.dart';
 import 'package:mingo/view/shared/basic/text_field.dart';
 
 class _InputFields extends StatefulWidget {
@@ -23,13 +21,42 @@ class _InputFields extends StatefulWidget {
 }
 
 class _InputFieldsState extends State<_InputFields> {
+  static const _fuelDropdownOptions = <String>{
+    'Benzinska goriva',
+    'Dizel goriva',
+    'Autoplin',
+    'Plinsko ulje',
+  };
+
+  static const _counties = <String>[
+    'BJELOVARSKO-BILOGORSKA',
+    'BRODSKO-POSAVSKA',
+    'DUBROVAČKO-NERETVANSKA',
+    'GRAD ZAGREB',
+    'ISTARSKA',
+    'KARLOVAČKA',
+    'KOPRIVNIČKO-KRIŽEVAČKA',
+    'KRAPINSKO-ZAGORSKA',
+    'LIČKO-SENJSKA',
+    'MEĐIMURSKA',
+    'OSJEČKO-BARANJSKA',
+    'POŽEŠKO-SLAVONSKA',
+    'PRIMORSKO-GORANSKA',
+    'SISAČKO-MOSLAVAČKA',
+    'SPLITSKO-DALMATINSKA',
+    'VARAŽDINSKA',
+    'VUKOVARSKO-SRIJEMSKA',
+    'ZADARSKA',
+    'ŠIBENSKO-KNINSKA',
+    'VIROVITIČKO-PODRAVSKA',
+  ];
+
   String? _fuelType, _county;
 
   bool _sending = false;
 
   @override
   Widget build(BuildContext context) {
-    if (!Att.accepted) return const SizedBox();
     return Form(
       key: widget.formKey,
       child: Column(
@@ -79,10 +106,10 @@ class _InputFieldsState extends State<_InputFields> {
                     disabledBorder: InputBorder.none,
                   ),
                   items: [
-                    for (int i = 0; i < DashboardPageSearchField.fuelKinds.length; i++)
+                    for (int i = 0; i < _fuelDropdownOptions.length; i++)
                       DropdownMenuItem(
-                        child: Text(DashboardPageSearchField.fuelKinds.elementAt(i)),
-                        value: DashboardPageSearchField.fuelKinds.elementAt(i),
+                        child: Text(_fuelDropdownOptions.elementAt(i)),
+                        value: _fuelDropdownOptions.elementAt(i),
                       ),
                   ],
                   validator: (value) {
@@ -108,10 +135,10 @@ class _InputFieldsState extends State<_InputFields> {
                     disabledBorder: InputBorder.none,
                   ),
                   items: [
-                    for (var county in MinGOData.instance.counties)
+                    for (var county in _counties)
                       DropdownMenuItem(
-                        child: Text(county.name),
-                        value: county.name,
+                        child: Text(county),
+                        value: county,
                       ),
                   ],
                   validator: (value) {
@@ -176,6 +203,11 @@ class _InputFieldsState extends State<_InputFields> {
                           _fuelType!,
                           _county!,
                         );
+                        widget.emailController.clear();
+                        widget.firstNameController.clear();
+                        widget.lastNameController.clear();
+                        _fuelType = null;
+                        _county = null;
                         setState(() => _sending = false);
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
@@ -218,6 +250,7 @@ class _NewsletterSubscriptionFieldState extends State<NewsletterSubscriptionFiel
 
   @override
   Widget build(BuildContext context) {
+    if (!Att.accepted) return const SizedBox();
     return DecoratedBox(
       decoration: const BoxDecoration(
         color: Color(0xff16FFBD),

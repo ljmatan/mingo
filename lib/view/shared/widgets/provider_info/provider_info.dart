@@ -26,7 +26,7 @@ class _ProviderInfoState extends State<ProviderInfo> {
   @override
   void initState() {
     super.initState();
-    if (widget.popup) {
+    if (widget.popup && MinGOData.filterConfig.fuelTypeId != null) {
       final prices = widget.station.priceList
           .where(
             (p) =>
@@ -34,8 +34,12 @@ class _ProviderInfoState extends State<ProviderInfo> {
                 MinGOData.instance.fuels.firstWhere((f) => f.id == p.fuelId).fuelKindId == 10 && MinGOData.filterConfig.fuelTypeId == 4 ||
                 MinGOData.instance.fuels.firstWhere((f) => f.id == p.fuelId).fuelKindId == 1 && MinGOData.filterConfig.fuelTypeId == 1 ||
                 MinGOData.instance.fuels.firstWhere((f) => f.id == p.fuelId).fuelKindId == 2 && MinGOData.filterConfig.fuelTypeId == 1 ||
+                MinGOData.instance.fuels.firstWhere((f) => f.id == p.fuelId).fuelKindId == 5 && MinGOData.filterConfig.fuelTypeId == 1 ||
+                MinGOData.instance.fuels.firstWhere((f) => f.id == p.fuelId).fuelKindId == 6 && MinGOData.filterConfig.fuelTypeId == 1 ||
                 MinGOData.instance.fuels.firstWhere((f) => f.id == p.fuelId).fuelKindId == 7 && MinGOData.filterConfig.fuelTypeId == 2 ||
-                MinGOData.instance.fuels.firstWhere((f) => f.id == p.fuelId).fuelKindId == 8 && MinGOData.filterConfig.fuelTypeId == 2,
+                MinGOData.instance.fuels.firstWhere((f) => f.id == p.fuelId).fuelKindId == 8 && MinGOData.filterConfig.fuelTypeId == 2 ||
+                MinGOData.instance.fuels.firstWhere((f) => f.id == p.fuelId).fuelKindId == 11 && MinGOData.filterConfig.fuelTypeId == 2 ||
+                MinGOData.instance.fuels.firstWhere((f) => f.id == p.fuelId).fuelKindId == 13 && MinGOData.filterConfig.fuelTypeId == 2,
           )
           .toList();
       prices.sort((a, b) => a.price!.compareTo(b.price!));
@@ -48,7 +52,7 @@ class _ProviderInfoState extends State<ProviderInfo> {
         'location_pin',
         if (LocationServices.locationData != null) 'location_group',
         'clock',
-        if (widget.popup) 'payments',
+        if (widget.popup && MinGOData.filterConfig.fuelTypeId != null) 'payments',
       };
 
   @override
@@ -118,21 +122,23 @@ class _ProviderInfoState extends State<ProviderInfo> {
                                 'km'
                             : i == 1 && LocationServices.locationData == null || i == 2 && LocationServices.locationData != null
                                 ? 'Radno vrijeme: ${StationUtil.formattedTime(widget.station)}'
-                                : _lowestPricedFuelName! +
-                                    '\n' +
-                                    (DateTime.now().year > 2023
-                                        ? (_lowestPrice!.price! / 7.5345).toStringAsFixed(2) +
-                                            ' EUR / L' +
-                                            (DateTime.now().year < 2023 || DateTime.now().year == 2023 && DateTime.now().month < 6
-                                                ? '  •  '
-                                                : '')
-                                        : '') +
-                                    (DateTime.now().year < 2023 || DateTime.now().year == 2023 && DateTime.now().month < 6
-                                        ? _lowestPrice!.price!.toString() + ' HRK / L'
-                                        : '') +
-                                    (DateTime.now().year < 2023
-                                        ? '  •  ' + (_lowestPrice!.price! / 7.5345).toStringAsFixed(2) + ' EUR / L'
-                                        : ''),
+                                : (MinGOData.filterConfig.fuelTypeId != null
+                                    ? _lowestPricedFuelName! +
+                                        '\n' +
+                                        (DateTime.now().year > 2023
+                                            ? (_lowestPrice!.price! / 7.5345).toStringAsFixed(2) +
+                                                ' EUR / L' +
+                                                (DateTime.now().year < 2023 || DateTime.now().year == 2023 && DateTime.now().month < 6
+                                                    ? '  •  '
+                                                    : '')
+                                            : '') +
+                                        (DateTime.now().year < 2023 || DateTime.now().year == 2023 && DateTime.now().month < 6
+                                            ? _lowestPrice!.price!.toString() + ' HRK / L'
+                                            : '') +
+                                        (DateTime.now().year < 2023
+                                            ? '  •  ' + (_lowestPrice!.price! / 7.5345).toStringAsFixed(2) + ' EUR / L'
+                                            : '')
+                                    : ''),
                     style: const TextStyle(
                       color: Color(0xffC6C8CC),
                     ),

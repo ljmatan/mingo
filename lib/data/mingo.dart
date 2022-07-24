@@ -10,6 +10,7 @@ import 'package:mingo/view/theme.dart';
 
 class _FilterConfig {
   int? fuelTypeId = 1, distanceId;
+  bool electricFriendly = false;
 
   _FilterConfig();
 }
@@ -61,9 +62,9 @@ abstract class MinGOData {
     }
 
     final stations = List<Station>.from(data['stations']);
-    debugPrint('stations $stations ${stations.runtimeType}');
+    debugPrint('stations ${stations.runtimeType}');
     final fuels = List<Fuel>.from(data['fuels']);
-    debugPrint('fuels $fuels ${fuels.runtimeType}');
+    debugPrint('fuelss ${fuels.runtimeType}');
 
     final orderedList = <Map>[];
 
@@ -73,13 +74,25 @@ abstract class MinGOData {
       if (fuelTypeId == 1) {
         prices = station.priceList.where(
           (price) => fuels
-              .where((fuel) => fuel.id == price.fuelId && fuel.fuelKindId == 1 || fuel.id == price.fuelId && fuel.fuelKindId == 2)
+              .where(
+                (fuel) =>
+                    fuel.id == price.fuelId && fuel.fuelKindId == 1 ||
+                    fuel.id == price.fuelId && fuel.fuelKindId == 2 ||
+                    fuel.id == price.fuelId && fuel.fuelKindId == 5 ||
+                    fuel.id == price.fuelId && fuel.fuelKindId == 6,
+              )
               .isNotEmpty,
         );
       } else if (fuelTypeId == 2) {
         prices = station.priceList.where(
           (price) => fuels
-              .where((fuel) => fuel.id == price.fuelId && fuel.fuelKindId == 7 || fuel.id == price.fuelId && fuel.fuelKindId == 8)
+              .where(
+                (fuel) =>
+                    fuel.id == price.fuelId && fuel.fuelKindId == 7 ||
+                    fuel.id == price.fuelId && fuel.fuelKindId == 8 ||
+                    fuel.id == price.fuelId && fuel.fuelKindId == 11 ||
+                    fuel.id == price.fuelId && fuel.fuelKindId == 13,
+              )
               .isNotEmpty,
         );
       } else {
@@ -135,8 +148,12 @@ abstract class MinGOData {
                       (price) =>
                           fuelKindId == 1 && fuels.firstWhere((fuel) => fuel.id == price.fuelId).fuelKindId == 1 ||
                           fuelKindId == 1 && fuels.firstWhere((fuel) => fuel.id == price.fuelId).fuelKindId == 2 ||
+                          fuelKindId == 1 && fuels.firstWhere((fuel) => fuel.id == price.fuelId).fuelKindId == 5 ||
+                          fuelKindId == 1 && fuels.firstWhere((fuel) => fuel.id == price.fuelId).fuelKindId == 6 ||
                           fuelKindId == 2 && fuels.firstWhere((fuel) => fuel.id == price.fuelId).fuelKindId == 7 ||
                           fuelKindId == 2 && fuels.firstWhere((fuel) => fuel.id == price.fuelId).fuelKindId == 8 ||
+                          fuelKindId == 2 && fuels.firstWhere((fuel) => fuel.id == price.fuelId).fuelKindId == 11 ||
+                          fuelKindId == 2 && fuels.firstWhere((fuel) => fuel.id == price.fuelId).fuelKindId == 13 ||
                           fuels.firstWhere((fuel) => fuel.id == price.fuelId).fuelKindId == fuelKindId,
                     )
                     .isNotEmpty,
@@ -153,7 +170,7 @@ abstract class MinGOData {
       'stations': MinGOData.instance.stations,
       'fuels': MinGOData.instance.fuels,
     };
-    debugPrint('data $data ${data.runtimeType}');
+    debugPrint('data ${data.runtimeType}');
     _fuelTypesByStation = kIsWeb ? _filterStationIdsByFuelKind(data) : await compute(_filterStationIdsByFuelKind, data);
     debugPrint('_fuelTypesByStation $_fuelTypesByStation ${_fuelTypesByStation.runtimeType}');
   }
@@ -161,6 +178,10 @@ abstract class MinGOData {
   static bool isFuelKind(Station station) {
     final fuelTypeId = filterConfig.fuelTypeId != null ? filterConfig.fuelTypeId! - 1 : null;
     return filterConfig.fuelTypeId == null || _fuelTypesByStation.elementAt(fuelTypeId!).contains(station.id);
+  }
+
+  static bool isElectricFriendly(Station station) {
+    return !filterConfig.electricFriendly || station.options.where((e) => e.optionId == 20).isNotEmpty;
   }
 
   static double? get selectedDistance {
@@ -207,14 +228,19 @@ abstract class MinGOData {
     return stationsInRadius;
   }
 
-  static void setFuelKind(int? fuelKindId) {
+  static void setFuelKind(int? fuelKindId, [bool rebuild = true]) {
     filterConfig.fuelTypeId = fuelKindId;
-    updateFilteredMarkers();
+    if (rebuild) updateFilteredMarkers();
   }
 
-  static void setDistance(int? distanceId) {
+  static void setEVFriendly(bool value, [bool rebuild = true]) {
+    filterConfig.electricFriendly = value;
+    if (rebuild) updateFilteredMarkers();
+  }
+
+  static void setDistance(int? distanceId, [bool rebuild = true]) {
     filterConfig.distanceId = distanceId;
-    updateFilteredMarkers();
+    if (rebuild) updateFilteredMarkers();
   }
 
   static List<Station> _getFilteredStations() {
@@ -222,6 +248,7 @@ abstract class MinGOData {
         .where(
           (e) =>
               isFuelKind(e) &&
+              isElectricFriendly(e) &&
               isWithinRadius(e) &&
               isFilteredFuelType(e) &&
               isFilteredOption(e) &&
@@ -250,6 +277,18 @@ abstract class MinGOData {
                               (f) {
                                 return f.id == price.fuelId;
                               },
+                            ).fuelKindId ||
+                        5 ==
+                            instance.fuels.firstWhere(
+                              (f) {
+                                return f.id == price.fuelId;
+                              },
+                            ).fuelKindId ||
+                        6 ==
+                            instance.fuels.firstWhere(
+                              (f) {
+                                return f.id == price.fuelId;
+                              },
                             ).fuelKindId) ||
                 e['id'] == 2 &&
                     (7 ==
@@ -259,6 +298,18 @@ abstract class MinGOData {
                               },
                             ).fuelKindId ||
                         8 ==
+                            instance.fuels.firstWhere(
+                              (f) {
+                                return f.id == price.fuelId;
+                              },
+                            ).fuelKindId ||
+                        11 ==
+                            instance.fuels.firstWhere(
+                              (f) {
+                                return f.id == price.fuelId;
+                              },
+                            ).fuelKindId ||
+                        13 ==
                             instance.fuels.firstWhere(
                               (f) {
                                 return f.id == price.fuelId;
@@ -354,8 +405,6 @@ abstract class MinGOData {
       'stations': stations,
       'fuels': instance.fuels,
     }).whenComplete(() {
-      // openStations = getOpenStations;
-      // DashboardPageOpenStationsController.update(openStations);
       MapMarkersController.update(stations);
     });
   }
@@ -364,18 +413,18 @@ abstract class MinGOData {
   static set mapReferencePoint(LatLng value) {
     mapFocusLocation = value;
     getStationsInRadius().whenComplete(() {
-      // openStations = getOpenStations;
-      // DashboardPageOpenStationsController.update(openStations);
       updateFilteredMarkers();
     });
   }
 
   static void resetFilters() {
     filterConfig.fuelTypeId = 1;
+    filterConfig.electricFriendly = false;
     filterConfig.distanceId = null;
     filteredFuelTypes.clear();
     filteredOptions.clear();
     filteredWorkDays.clear();
+    filteredWorkDaysTimes.clear();
     filteredProviders.clear();
     updateFilteredMarkers();
   }

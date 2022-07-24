@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mingo/api/price_trends.dart';
@@ -64,20 +65,17 @@ class _ProviderDetailsRouteState extends State<ProviderDetailsRoute> {
           ),
           Expanded(
             child: FutureBuilder<List<PriceTrendModel>>(
-              future: PriceTrendsApi.getStationTrends(widget.station.id).then((value) {
-                for (var trend in value) {
-                  final fuelKindId = MinGOData.instance.fuels.firstWhere((f) => f.id == trend.fuelId).fuelKindId!;
-                  trend.fuelId = fuelKindId == 1 || fuelKindId == 2
-                      ? 1
-                      : fuelKindId == 7 || fuelKindId == 8
-                          ? 2
-                          : fuelKindId == 9
-                              ? 3
-                              : 4;
-                }
-                value.removeWhere((e) => e.lastUpdated.year < 2010);
-                return value;
-              }),
+              future: kIsWeb
+                  ? PriceTrendsApi.getStationTrends({
+                      'stationId': widget.station.id,
+                      'fuels': MinGOData.instance.fuels,
+                      'currentTime': DateTime.now(),
+                    })
+                  : compute(PriceTrendsApi.getStationTrends, {
+                      'stationId': widget.station.id,
+                      'fuels': MinGOData.instance.fuels,
+                      'currentTime': DateTime.now(),
+                    }),
               builder: (context, trends) {
                 return ListView(
                   padding: EdgeInsets.zero,
@@ -136,12 +134,25 @@ class _ProviderDetailsRouteState extends State<ProviderDetailsRoute> {
                               station: widget.station,
                             ),
                           ),
-                          AnimatedSize(
-                            duration: const Duration(milliseconds: 300),
-                            child: trends.data != null
-                                ? FuelTrendsChartSection(data: trends.data!)
-                                : SizedBox(width: MediaQuery.of(context).size.width),
-                          ),
+                          kDebugMode && trends.error != null
+                              ? Padding(
+                                  padding: const EdgeInsets.all(16),
+                                  child: Text(
+                                    trends.error.toString(),
+                                    style: const TextStyle(color: Colors.white),
+                                  ),
+                                )
+                              : kIsWeb
+                                  ? trends.data != null
+                                      ? FuelTrendsChartSection(data: trends.data!)
+                                      : const SizedBox()
+                                  : AnimatedSize(
+                                      duration: const Duration(milliseconds: 400),
+                                      curve: Curves.ease,
+                                      child: trends.data != null
+                                          ? FuelTrendsChartSection(data: trends.data!)
+                                          : SizedBox(width: MediaQuery.of(context).size.width),
+                                    ),
                           const NewsletterSubscriptionField(),
                           const Footer(),
                         ]
@@ -210,13 +221,25 @@ class _ProviderDetailsRouteState extends State<ProviderDetailsRoute> {
                               ],
                             ),
                           ),
-                          AnimatedSize(
-                            duration: const Duration(milliseconds: 400),
-                            curve: Curves.ease,
-                            child: trends.data != null
-                                ? FuelTrendsChartSection(data: trends.data!)
-                                : SizedBox(width: MediaQuery.of(context).size.width),
-                          ),
+                          kDebugMode && trends.error != null
+                              ? Padding(
+                                  padding: const EdgeInsets.all(16),
+                                  child: Text(
+                                    trends.error.toString(),
+                                    style: const TextStyle(color: Colors.white),
+                                  ),
+                                )
+                              : kIsWeb
+                                  ? trends.data != null
+                                      ? FuelTrendsChartSection(data: trends.data!)
+                                      : const SizedBox()
+                                  : AnimatedSize(
+                                      duration: const Duration(milliseconds: 400),
+                                      curve: Curves.ease,
+                                      child: trends.data != null
+                                          ? FuelTrendsChartSection(data: trends.data!)
+                                          : SizedBox(width: MediaQuery.of(context).size.width),
+                                    ),
                           const NewsletterSubscriptionField(),
                           const Footer(),
                         ],

@@ -29,8 +29,12 @@ class _DashboardPageLargeStationPreviewState extends State<DashboardPageLargeSta
               MinGOData.instance.fuels.firstWhere((f) => f.id == p.fuelId).fuelKindId == 10 && MinGOData.filterConfig.fuelTypeId == 4 ||
               MinGOData.instance.fuels.firstWhere((f) => f.id == p.fuelId).fuelKindId == 1 && MinGOData.filterConfig.fuelTypeId == 1 ||
               MinGOData.instance.fuels.firstWhere((f) => f.id == p.fuelId).fuelKindId == 2 && MinGOData.filterConfig.fuelTypeId == 1 ||
+              MinGOData.instance.fuels.firstWhere((f) => f.id == p.fuelId).fuelKindId == 5 && MinGOData.filterConfig.fuelTypeId == 1 ||
+              MinGOData.instance.fuels.firstWhere((f) => f.id == p.fuelId).fuelKindId == 6 && MinGOData.filterConfig.fuelTypeId == 1 ||
               MinGOData.instance.fuels.firstWhere((f) => f.id == p.fuelId).fuelKindId == 7 && MinGOData.filterConfig.fuelTypeId == 2 ||
-              MinGOData.instance.fuels.firstWhere((f) => f.id == p.fuelId).fuelKindId == 8 && MinGOData.filterConfig.fuelTypeId == 2,
+              MinGOData.instance.fuels.firstWhere((f) => f.id == p.fuelId).fuelKindId == 8 && MinGOData.filterConfig.fuelTypeId == 2 ||
+              MinGOData.instance.fuels.firstWhere((f) => f.id == p.fuelId).fuelKindId == 11 && MinGOData.filterConfig.fuelTypeId == 2 ||
+              MinGOData.instance.fuels.firstWhere((f) => f.id == p.fuelId).fuelKindId == 13 && MinGOData.filterConfig.fuelTypeId == 2,
         )
         .toList();
     prices.sort((a, b) => a.price!.compareTo(b.price!));

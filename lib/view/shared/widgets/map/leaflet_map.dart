@@ -129,7 +129,7 @@ class LeafletMapState extends State<LeafletMap> with TickerProviderStateMixin, A
       }
       if (zoom == null && lat == mapController.center.latitude && lng == mapController.center.longitude) return;
       double zoomValue = absoluteZoomValue ? (zoom ?? mapController.zoom) : mapController.zoom + (zoom ?? 0);
-      if (zoomValue < 9 || zoomValue > 16) zoomValue = mapController.zoom;
+      if (zoomValue < 9 || zoomValue > 20) zoomValue = mapController.zoom;
       final zoomTween = Tween<double>(
         begin: mapController.zoom,
         end: zoomValue,
@@ -187,7 +187,7 @@ class LeafletMapState extends State<LeafletMap> with TickerProviderStateMixin, A
           .toList();
       MinGOData.orderedStations = ordered;
       DashboardPageOpenStationsController.update(ordered);
-      return ordered.sublist(0, ordered.length < 4 ? ordered.length : 4);
+      return ordered.sublist(0, ordered.length < 4 ? ordered.length : 4).reversed.toList();
     } catch (e) {
       return null;
     }
@@ -221,10 +221,9 @@ class LeafletMapState extends State<LeafletMap> with TickerProviderStateMixin, A
       context: context,
       barrierColor: Colors.transparent,
       builder: (context) {
-        return Material(
-          color: Colors.transparent,
-          child: GestureDetector(
-            behavior: HitTestBehavior.opaque,
+        return Listener(
+          child: Material(
+            color: Colors.transparent,
             child: Transform.translate(
               offset: Offset(
                 MediaQuery.of(context).size.width < 1000 ? widgetOffset.dx : MediaQuery.of(context).size.width * (2 / 5),
@@ -305,7 +304,7 @@ class LeafletMapState extends State<LeafletMap> with TickerProviderStateMixin, A
                               ),
                             ),
                             onTap: () {
-                              Navigator.pop(context);
+                              Navigator.popUntil(context, (route) => route.isFirst);
                               Navigator.of(context).push(
                                 MaterialPageRoute<void>(
                                   builder: (BuildContext context) => ProviderDetailsRoute(station),
@@ -320,8 +319,8 @@ class LeafletMapState extends State<LeafletMap> with TickerProviderStateMixin, A
                 ],
               ),
             ),
-            onTap: () => Navigator.pop(context),
           ),
+          onPointerDown: (_) => Navigator.popUntil(context, (route) => route.isFirst),
         );
       },
     );
@@ -343,13 +342,8 @@ class LeafletMapState extends State<LeafletMap> with TickerProviderStateMixin, A
               options: MapOptions(
                 controller: mapController,
                 zoom: widget.station != null ? 16 : 11.5,
-                minZoom: _lockedZoom ?? (widget.providersSearch ? null : (MediaQuery.of(context).size.width < 1000 ? 9 : 9.6)),
-                maxZoom: _lockedZoom ??
-                    (widget.providersSearch
-                        ? null
-                        : MediaQuery.of(context).size.width < 1000
-                            ? 16
-                            : 20),
+                minZoom: _lockedZoom ?? (widget.providersSearch ? null : 9),
+                maxZoom: _lockedZoom,
                 center: widget.station != null
                     ? LatLng(
                         double.parse(widget.station!.lat!),
@@ -412,14 +406,14 @@ class LeafletMapState extends State<LeafletMap> with TickerProviderStateMixin, A
                               rotate: true,
                             ),
                           if (!widget.providersSearch && _orderedStations?.isNotEmpty == true)
-                            for (int i = 0; i < _orderedStations!.length; i++)
+                            for (int i = _orderedStations!.length - 1; i >= 0; i--)
                               Marker(
                                 point: LatLng(
                                   double.parse(_orderedStations!.elementAt(i).lat!),
                                   double.parse(_orderedStations!.elementAt(i).lng!),
                                 ),
                                 builder: (context) => _MapMarker(
-                                  MinGOData.orderedStations[i],
+                                  _orderedStations!.elementAt(i),
                                   index: i,
                                   onTap: () async {
                                     await move(

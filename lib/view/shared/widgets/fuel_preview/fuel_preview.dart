@@ -18,7 +18,7 @@ class FuelPreview extends StatelessWidget {
           .firstWhere((e) => e.id == MinGOData.instance.fuels.firstWhere((e) => e.id == fuelId).fuelKindId)
           .fuelKindId;
     } catch (e) {
-      return 5;
+      return -1;
     }
   }
 

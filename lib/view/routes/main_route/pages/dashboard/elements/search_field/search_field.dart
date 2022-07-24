@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:mingo/data/mingo.dart';
+import 'package:mingo/utils/station/station_util.dart';
 import 'package:mingo/view/routes/main_route/pages/dashboard/elements/open_stations/open_stations.dart';
 import 'package:mingo/view/routes/main_route/pages/dashboard/elements/search_field/elements/animated_dropdown/animated_dropdown.dart';
 import 'package:mingo/view/routes/main_route/pages/dashboard/elements/search_field/elements/filter_view/filter_view.dart';
 import 'package:mingo/view/routes/main_route/pages/dashboard/elements/search_field/elements/search_view/search_view.dart';
 import 'package:mingo/view/shared/basic/action_button.dart';
 import 'package:mingo/view/shared/widgets/map/leaflet_map.dart';
+import 'package:latlong2/latlong.dart';
 
 class DashboardPageSearchTextInputField extends StatefulWidget {
   final TextEditingController searchFieldController;
@@ -81,14 +83,14 @@ class DashboardPageSearchField extends StatefulWidget {
     'Filter',
   };
 
-  static const fuelKinds = <String>['Benzin', 'Dizel', 'Autoplin', 'Plinsko ulje'];
+  static const fuelKinds = <String>['Benzin', 'Dizel', 'Autoplin', 'Plinsko ulje', 'EV punjenje'];
   static const distances = <String>['5 km', '10 km', '15 km', '25 km', '50 km'];
 
   @override
   State<DashboardPageSearchField> createState() => DashboardPageSearchFieldState();
 }
 
-class DashboardPageSearchFieldState extends State<DashboardPageSearchField> {
+class DashboardPageSearchFieldState extends State<DashboardPageSearchField> with AutomaticKeepAliveClientMixin {
   static bool _searchView = false;
   static bool _filterView = false;
 
@@ -113,6 +115,7 @@ class DashboardPageSearchFieldState extends State<DashboardPageSearchField> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return MediaQuery.of(context).size.width < 1000
         ? _searchView
             ? DashboardPageSearchView(
@@ -158,11 +161,37 @@ class DashboardPageSearchFieldState extends State<DashboardPageSearchField> {
                                       case 2:
                                       case 3:
                                         if (_selectedFuelKind != value) {
-                                          MinGOData.setFuelKind(value + 1);
+                                          MinGOData.setEVFriendly(false, false);
+                                          MinGOData.setFuelKind(value + 1, false);
                                           MinGOData.mapReferencePoint = widget.mapKey.currentState!.mapController.center;
                                         } else {
                                           throw 'Already selected';
                                         }
+                                        break;
+                                      case 4:
+                                        if (MinGOData.filterConfig.electricFriendly) {
+                                          throw 'Already selected';
+                                        } else {
+                                          MinGOData.setFuelKind(null, false);
+                                          MinGOData.setEVFriendly(true, false);
+                                          MinGOData.mapReferencePoint = widget.mapKey.currentState!.mapController.center;
+                                        }
+                                        Future.delayed(
+                                          const Duration(milliseconds: 100),
+                                          () {
+                                            widget.mapKey.currentState!.mapController.fitBounds(
+                                              StationUtil.boundsFromLatLngList(
+                                                [
+                                                  for (var station in MinGOData.stations)
+                                                    LatLng(
+                                                      double.parse(station.lat!),
+                                                      double.parse(station.lng!),
+                                                    ),
+                                                ],
+                                              ),
+                                            );
+                                          },
+                                        );
                                         break;
                                       default:
                                         throw 'Not implemented';
@@ -185,7 +214,7 @@ class DashboardPageSearchFieldState extends State<DashboardPageSearchField> {
                                       case 4:
                                         widget.mapKey.currentState!.mapController.move(
                                           widget.mapKey.currentState!.mapController.center,
-                                          (20 - value).toDouble(),
+                                          (13 - value).toDouble(),
                                         );
                                         // MinGOData.setDistance(MinGOData.filterConfig.distanceId == value ? null : value);
                                         Future.delayed(
@@ -272,8 +301,38 @@ class DashboardPageSearchFieldState extends State<DashboardPageSearchField> {
                                                 case 1:
                                                 case 2:
                                                 case 3:
-                                                  MinGOData.setFuelKind(_selectedFuelKind == value ? null : value + 1);
-                                                  MinGOData.mapReferencePoint = widget.mapKey.currentState!.mapController.center;
+                                                  if (_selectedFuelKind != value) {
+                                                    MinGOData.setEVFriendly(false, false);
+                                                    MinGOData.setFuelKind(value + 1, false);
+                                                    MinGOData.mapReferencePoint = widget.mapKey.currentState!.mapController.center;
+                                                  } else {
+                                                    throw 'Already selected';
+                                                  }
+                                                  break;
+                                                case 4:
+                                                  if (MinGOData.filterConfig.electricFriendly) {
+                                                    throw 'Already selected';
+                                                  } else {
+                                                    MinGOData.setFuelKind(null, false);
+                                                    MinGOData.setEVFriendly(true, false);
+                                                    MinGOData.mapReferencePoint = widget.mapKey.currentState!.mapController.center;
+                                                  }
+                                                  Future.delayed(
+                                                    const Duration(milliseconds: 100),
+                                                    () {
+                                                      widget.mapKey.currentState!.mapController.fitBounds(
+                                                        StationUtil.boundsFromLatLngList(
+                                                          [
+                                                            for (var station in MinGOData.stations)
+                                                              LatLng(
+                                                                double.parse(station.lat!),
+                                                                double.parse(station.lng!),
+                                                              ),
+                                                          ],
+                                                        ),
+                                                      );
+                                                    },
+                                                  );
                                                   break;
                                                 default:
                                                   throw 'Not implemented';
@@ -296,7 +355,7 @@ class DashboardPageSearchFieldState extends State<DashboardPageSearchField> {
                                                 case 4:
                                                   widget.mapKey.currentState!.mapController.move(
                                                     widget.mapKey.currentState!.mapController.center,
-                                                    (14 - value).toDouble(),
+                                                    (20 - value).toDouble(),
                                                   );
                                                   // MinGOData.setDistance(MinGOData.filterConfig.distanceId == value ? null : value);
                                                   Future.delayed(
@@ -345,4 +404,7 @@ class DashboardPageSearchFieldState extends State<DashboardPageSearchField> {
             ),
           );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }
