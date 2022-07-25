@@ -200,8 +200,8 @@ class _MinGOActionButtonState extends State<MinGOActionButton> {
                     );
                   }
                   if (widget.contentBlocking) {
-                    await widget.onTap!();
                     Navigator.pop(context);
+                    await widget.onTap!();
                   } else {
                     widget.onTap!();
                   }

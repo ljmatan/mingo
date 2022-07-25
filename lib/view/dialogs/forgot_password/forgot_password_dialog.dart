@@ -65,6 +65,7 @@ class _ForgotPasswordDialogState extends State<ForgotPasswordDialog> {
                 ScaffoldMessenger.of(AppNavigator.key.currentContext!).showSnackBar(
                   const SnackBar(
                     content: Text('Email sa uputama za resetiranje lozinke je poslan na Vaš mail.'),
+                    duration: Duration(seconds: 6),
                   ),
                 );
               }

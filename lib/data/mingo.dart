@@ -130,7 +130,7 @@ abstract class MinGOData {
     debugPrint('Computing ordered stations');
     data['fuelTypeId'] = filterConfig.fuelTypeId;
     debugPrint('data[\'fuelTypeId\'] ${data['fuelTypeId']} ${data['fuelTypeId'].runtimeType}');
-    orderedStations = !kIsWeb ? _getOrderedStations(data) : await compute(_getOrderedStations, data);
+    orderedStations = kIsWeb ? _getOrderedStations(data) : await compute(_getOrderedStations, data);
     debugPrint('Ordered stations ${orderedStations.length}');
     return orderedStations;
   }
@@ -216,7 +216,13 @@ abstract class MinGOData {
     return stations.where((e) => isWithinRadius(e)).toList();
   }
 
-  static List<Station> get getOpenStations => orderedStations.where((e) => StationUtil.isOpen(e) && e.priceList.length > 2).toList();
+  static List<Station> get getOpenStations => orderedStations
+      .where((e) =>
+          StationUtil.isOpen(
+            e,
+          ) &&
+          e.priceList.length > 2)
+      .toList();
   static late List<Station> openStations;
 
   static Future<List<Station>> getStationsInRadius() async {
@@ -444,76 +450,5 @@ abstract class MinGOData {
     }
   }
 
-  static final List<PenalisedProviderModel> penalisedProviders = [
-    {'lastUpdated': '2022-06-23T00:00:00.000', 'stationId': 1242},
-    {'lastUpdated': '2022-06-21T00:00:00.000', 'stationId': 1358},
-    {'lastUpdated': '2022-06-21T00:00:00.000', 'stationId': 1359},
-    {'lastUpdated': '2022-06-08T00:00:00.000', 'stationId': 1255},
-    {'lastUpdated': '2022-06-23T00:00:00.000', 'stationId': 1260},
-    {'lastUpdated': '2020-10-02T00:00:00.000', 'stationId': 61},
-    {'lastUpdated': '2017-10-30T00:00:00.000', 'stationId': 707},
-    {'lastUpdated': '2022-06-14T00:00:00.000', 'stationId': 1369},
-    {'lastUpdated': '2022-06-21T00:00:00.000', 'stationId': 803},
-    {'lastUpdated': '2022-06-21T00:00:00.000', 'stationId': 802},
-    {'lastUpdated': '2016-11-08T00:00:00.000', 'stationId': 811},
-    {'lastUpdated': '2020-04-28T00:00:00.000', 'stationId': 886},
-    {'lastUpdated': '2020-04-07T00:00:00.000', 'stationId': 945},
-    {'lastUpdated': '2016-07-19T00:00:00.000', 'stationId': 1005},
-    {'lastUpdated': '2022-05-30T00:00:00.000', 'stationId': 1010},
-    {'lastUpdated': '2022-06-08T00:00:00.000', 'stationId': 1015},
-    {'lastUpdated': '2020-04-14T00:00:00.000', 'stationId': 1098},
-    {'lastUpdated': '2022-06-08T00:00:00.000', 'stationId': 1173},
-    {'lastUpdated': '2022-06-08T00:00:00.000', 'stationId': 1175},
-    {'lastUpdated': '2016-11-08T00:00:00.000', 'stationId': 810},
-    {'lastUpdated': '2022-06-21T00:00:00.000', 'stationId': 816},
-    {'lastUpdated': '2022-06-21T00:00:00.000', 'stationId': 817},
-    {'lastUpdated': '2022-06-21T00:00:00.000', 'stationId': 822},
-    {'lastUpdated': '2019-04-15T00:00:00.000', 'stationId': 828},
-    {'lastUpdated': '2022-01-19T00:00:00.000', 'stationId': 830},
-    {'lastUpdated': '2022-06-21T00:00:00.000', 'stationId': 835},
-    {'lastUpdated': '2022-06-21T00:00:00.000', 'stationId': 840},
-    {'lastUpdated': '2021-06-29T00:00:00.000', 'stationId': 842},
-    {'lastUpdated': '2017-05-02T00:00:00.000', 'stationId': 862},
-    {'lastUpdated': '2016-03-15T00:00:00.000', 'stationId': 863},
-    {'lastUpdated': '2022-03-14T00:00:00.000', 'stationId': 865},
-    {'lastUpdated': '2022-05-17T00:00:00.000', 'stationId': 866},
-    {'lastUpdated': '2022-06-09T00:00:00.000', 'stationId': 871},
-    {'lastUpdated': '2022-06-09T00:00:00.000', 'stationId': 875},
-    {'lastUpdated': '2016-08-31T00:00:00.000', 'stationId': 889},
-    {'lastUpdated': '2022-06-21T00:00:00.000', 'stationId': 903},
-    {'lastUpdated': '2017-03-21T00:00:00.000', 'stationId': 907},
-    {'lastUpdated': '2022-06-21T00:00:00.000', 'stationId': 908},
-    {'lastUpdated': '2020-06-30T00:00:00.000', 'stationId': 934},
-    {'lastUpdated': '2022-06-08T00:00:00.000', 'stationId': 939},
-    {'lastUpdated': '2021-06-01T00:00:00.000', 'stationId': 940},
-    {'lastUpdated': '2022-06-21T00:00:00.000', 'stationId': 900},
-    {'lastUpdated': '2022-06-08T00:00:00.000', 'stationId': 910},
-    {'lastUpdated': '2021-09-28T00:00:00.000', 'stationId': 966},
-    {'lastUpdated': '2022-06-08T00:00:00.000', 'stationId': 973},
-    {'lastUpdated': '2022-06-08T00:00:00.000', 'stationId': 974},
-    {'lastUpdated': '2022-03-27T00:00:00.000', 'stationId': 976},
-    {'lastUpdated': '2019-07-18T00:00:00.000', 'stationId': 984},
-    {'lastUpdated': '2022-03-22T00:00:00.000', 'stationId': 990},
-    {'lastUpdated': '2015-02-27T00:00:00.000', 'stationId': 1004},
-    {'lastUpdated': '2020-04-14T00:00:00.000', 'stationId': 1013},
-    {'lastUpdated': '2019-10-01T00:00:00.000', 'stationId': 1023},
-    {'lastUpdated': '2022-06-09T00:00:00.000', 'stationId': 1035},
-    {'lastUpdated': '2022-06-09T00:00:00.000', 'stationId': 1047},
-    {'lastUpdated': '2022-06-09T00:00:00.000', 'stationId': 1059},
-    {'lastUpdated': '2022-06-21T00:00:00.000', 'stationId': 1061},
-    {'lastUpdated': '2022-06-21T00:00:00.000', 'stationId': 1120},
-    {'lastUpdated': '2022-06-09T00:00:00.000', 'stationId': 1075},
-    {'lastUpdated': '2021-06-01T00:00:00.000', 'stationId': 1082},
-    {'lastUpdated': '2022-06-09T00:00:00.000', 'stationId': 1085},
-    {'lastUpdated': '2022-06-21T00:00:00.000', 'stationId': 1048},
-    {'lastUpdated': '2022-06-08T00:00:00.000', 'stationId': 1145},
-    {'lastUpdated': '2022-06-09T00:00:00.000', 'stationId': 1153},
-    {'lastUpdated': '2022-06-21T00:00:00.000', 'stationId': 1146},
-    {'lastUpdated': '2022-06-21T00:00:00.000', 'stationId': 1116},
-    {'lastUpdated': '2022-06-16T00:00:00.000', 'stationId': 1118},
-    {'lastUpdated': '2022-06-09T00:00:00.000', 'stationId': 1160},
-    {'lastUpdated': '2022-06-08T00:00:00.000', 'stationId': 1174},
-    {'lastUpdated': '2022-06-08T00:00:00.000', 'stationId': 1176},
-    {'lastUpdated': '2022-06-08T00:00:00.000', 'stationId': 1180}
-  ].map((e) => PenalisedProviderModel.fromJson(e)).toList();
+  static final List<PenalisedProviderModel> penalisedProviders = [];
 }

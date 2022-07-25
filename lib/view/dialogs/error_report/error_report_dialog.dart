@@ -134,6 +134,7 @@ class _ErrorReportDialogState extends State<ErrorReportDialog> {
               ScaffoldMessenger.of(AppNavigator.key.currentContext!).showSnackBar(
                 const SnackBar(
                   content: Text('Prijava uspješno poslana.'),
+                  duration: Duration(seconds: 6),
                 ),
               );
             }

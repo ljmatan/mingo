@@ -128,6 +128,7 @@ class _RegisterDialogState extends State<RegisterDialog> {
               ScaffoldMessenger.of(AppNavigator.key.currentContext!).showSnackBar(
                 const SnackBar(
                   content: Text('Molimo potvrdite registraciju putem prethodno navedene email adrese.'),
+                  duration: Duration(seconds: 6),
                 ),
               );
             }

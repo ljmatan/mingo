@@ -146,7 +146,7 @@ class _FuelTrendsChartSectionState extends State<FuelTrendsChartSection> {
   void initState() {
     super.initState();
     if (widget.data != null) {
-      for (var gasType in {1, 2, 3, 4}) {
+      for (var gasType in FuelTrendsChartSection.fuelIds) {
         final trends = widget.data!.where((e) => e.fuelId == gasType);
         if (trends.isNotEmpty) _filtered.add(trends.toList());
       }
@@ -165,12 +165,7 @@ class _FuelTrendsChartSectionState extends State<FuelTrendsChartSection> {
       }
     } else {
       _seriesList = <charts.Series<PriceTrendModel, DateTime>>[
-        for (int i = 0;
-            i <
-                ((FuelTrendsChartSection.selectedPrices.isNotEmpty ? FuelTrendsChartSection.selectedPrices : FuelTrendsChartSection.fuelIds)
-                        as Iterable)
-                    .length;
-            i++)
+        for (int i = 0; i < FuelTrendsChartSection.fuelIds.length; i++)
           charts.Series<PriceTrendModel, DateTime>(
             id: 'Trends',
             colorFn: (_, __) => FuelTrendsChartSection.chartColors[i],

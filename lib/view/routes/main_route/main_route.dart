@@ -32,6 +32,7 @@ class MainRoute extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      endDrawerEnableOpenDragGesture: false,
       body: Column(
         children: [
           const MinGONavigationBar(),

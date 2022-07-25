@@ -94,6 +94,7 @@ class _ContactDialogState extends State<ContactDialog> {
               ScaffoldMessenger.of(AppNavigator.key.currentContext!).showSnackBar(
                 const SnackBar(
                   content: Text('Poruka poslana. Kontaktirat ćemo Vas u najkraćem mogućem roku.'),
+                  duration: Duration(seconds: 6),
                 ),
               );
             }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart' show Color;
 import 'package:flutter_map/flutter_map.dart';
+import 'package:mingo/data/mingo.dart';
 import 'package:mingo/models/app_data.dart';
 import 'package:latlong2/latlong.dart';
 
@@ -54,7 +55,8 @@ abstract class StationUtil {
     return 0;
   }
 
-  static bool isOpen(Station station) {
+  static bool isOpen(Station station, [bool strict = false]) {
+    if (strict && MinGOData.penalisedProviders.where((e) => e.providerId == station.id).isNotEmpty) return false;
     try {
       return DateTime.now().hour >= int.parse(station.workTimes[dayType].opening.split(':').first) &&
           DateTime.now().hour <= int.parse(station.workTimes[dayType].close.split(':').first);

@@ -18,6 +18,8 @@ import 'package:mingo/view/theme.dart';
 
 import 'package:flutter_localizations/flutter_localizations.dart';
 
+import 'package:device_preview/device_preview.dart' as device_preview;
+
 import 'utils/web/configure_nonweb.dart' if (dart.library.html) 'utils/web/configure_web.dart';
 
 void main() async {
@@ -28,16 +30,13 @@ void main() async {
     if (kDebugMode) {
       MinGOHttpClient.networkInspector?.setNavigatorKey(AppNavigator.key);
     }
+    HttpOverrides.global = InvalidSslOverride();
+    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   } else {
     configureApp();
   }
 
   await CacheManager.init();
-
-  if (!kIsWeb) {
-    HttpOverrides.global = InvalidSslOverride();
-    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-  }
 
   try {
     await DeviceInfo.init();
@@ -47,7 +46,13 @@ void main() async {
 
   await Att.init();
 
-  runApp(const MinGO());
+  runApp(
+    kProfileMode
+        ? device_preview.DevicePreview(
+            builder: (context) => const MinGO(),
+          )
+        : const MinGO(),
+  );
 }
 
 class MinGO extends StatelessWidget {
@@ -68,6 +73,8 @@ class MinGO extends StatelessWidget {
       theme: MinGOTheme.data,
       builder: (context, child) => NavigatorBuilder(child!),
       home: const MinGOSplash(),
+      useInheritedMediaQuery: kProfileMode ? true : false,
+      locale: kProfileMode ? device_preview.DevicePreview.locale(context) : null,
     );
   }
 }
@@ -92,7 +99,7 @@ class _MinGOSplashState extends State<MinGOSplash> {
         MinGOData.openStations = MinGOData.getOpenStations;
         debugPrint('Stations filtered');
       }),
-      // PriceTrendsApi.getLatestPricingUpdates(),
+      PriceTrendsApi.getLatestPricingUpdates(),
     ]);
   }
 

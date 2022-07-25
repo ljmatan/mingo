@@ -94,8 +94,6 @@ class LeafletMapState extends State<LeafletMap> with TickerProviderStateMixin, A
     if (kIsWeb && _animationController?.isAnimating != true) setState(() => _lockedZoom = enabled ? null : mapController.zoom);
   }
 
-  late double _zoom;
-
   Future<void> move({
     double? lat,
     double? lng,
@@ -113,7 +111,7 @@ class LeafletMapState extends State<LeafletMap> with TickerProviderStateMixin, A
       }
       if (zoom == null && lat == mapController.center.latitude && lng == mapController.center.longitude) return;
       double zoomValue = absoluteZoomValue ? (zoom ?? mapController.zoom) : mapController.zoom + (zoom ?? 0);
-      if (zoomValue < 9 || zoomValue > 16) zoomValue = mapController.zoom;
+      if (zoomValue < 9 || zoomValue > 20) zoomValue = mapController.zoom;
       mapController.move(
         LatLng(
           mapController.center.latitude,
@@ -161,7 +159,7 @@ class LeafletMapState extends State<LeafletMap> with TickerProviderStateMixin, A
           enableInput(false);
           _animationController!.dispose();
           if (markerTap) {
-            _zoom = mapController.zoom;
+            MapMarkersController.update(MinGOData.stations);
             MinGOData.mapReferencePoint = mapController.center;
           }
         }
@@ -187,7 +185,7 @@ class LeafletMapState extends State<LeafletMap> with TickerProviderStateMixin, A
           .toList();
       MinGOData.orderedStations = ordered;
       DashboardPageOpenStationsController.update(ordered);
-      return ordered.sublist(0, ordered.length < 4 ? ordered.length : 4).reversed.toList();
+      return ordered.sublist(0, ordered.length < 4 ? ordered.length : 4).toList();
     } catch (e) {
       return null;
     }
@@ -196,10 +194,7 @@ class LeafletMapState extends State<LeafletMap> with TickerProviderStateMixin, A
   @override
   void initState() {
     super.initState();
-    _zoom = widget.station != null ? 16 : 11.5;
-    if (widget.station == null && !widget.providersSearch) {
-      WidgetsBinding.instance.addPostFrameCallback((_) => setState(() {}));
-    }
+    WidgetsBinding.instance.addPostFrameCallback((_) => setState(() {}));
   }
 
   final _widgetKey = GlobalKey();
@@ -336,6 +331,7 @@ class LeafletMapState extends State<LeafletMap> with TickerProviderStateMixin, A
           stream: MapMarkersController.stream,
           initialData: MinGOData.stations,
           builder: (context, stations) {
+            final orderedStations = _orderedStations;
             return FlutterMap(
               key: _widgetKey,
               mapController: mapController,
@@ -365,7 +361,6 @@ class LeafletMapState extends State<LeafletMap> with TickerProviderStateMixin, A
                       !widget.providersSearch &&
                       position.center != null &&
                       distanceFromLastRecorded > (MinGOData.selectedDistance ?? (MediaQuery.of(context).size.width < 1000 ? 5 : 10))) {
-                    _zoom = position.zoom!;
                     MinGOData.mapReferencePoint = position.center!;
                   }
                 },
@@ -405,28 +400,30 @@ class LeafletMapState extends State<LeafletMap> with TickerProviderStateMixin, A
                               ),
                               rotate: true,
                             ),
-                          if (!widget.providersSearch && _orderedStations?.isNotEmpty == true)
-                            for (int i = _orderedStations!.length - 1; i >= 0; i--)
-                              Marker(
-                                point: LatLng(
-                                  double.parse(_orderedStations!.elementAt(i).lat!),
-                                  double.parse(_orderedStations!.elementAt(i).lng!),
+                          ...[
+                            if (!widget.providersSearch && orderedStations?.isNotEmpty == true)
+                              for (int i = 0; i < orderedStations!.length; i++)
+                                Marker(
+                                  point: LatLng(
+                                    double.parse(orderedStations.elementAt(i).lat!),
+                                    double.parse(orderedStations.elementAt(i).lng!),
+                                  ),
+                                  builder: (context) => _MapMarker(
+                                    orderedStations.elementAt(i),
+                                    index: i,
+                                    onTap: () async {
+                                      await move(
+                                        lat: double.parse(orderedStations.elementAt(i).lat!),
+                                        lng: double.parse(orderedStations.elementAt(i).lng!),
+                                        zoom: 14,
+                                        markerTap: true,
+                                      );
+                                      _onMarkerTap(_orderedStations!.elementAt(i));
+                                    },
+                                  ),
+                                  rotate: true,
                                 ),
-                                builder: (context) => _MapMarker(
-                                  _orderedStations!.elementAt(i),
-                                  index: i,
-                                  onTap: () async {
-                                    await move(
-                                      lat: double.parse(_orderedStations!.elementAt(i).lat!),
-                                      lng: double.parse(_orderedStations!.elementAt(i).lng!),
-                                      zoom: 14,
-                                      markerTap: true,
-                                    );
-                                    _onMarkerTap(_orderedStations!.elementAt(i));
-                                  },
-                                ),
-                                rotate: true,
-                              ),
+                          ].reversed,
                           if (LocationServices.locationData != null)
                             Marker(
                               point: LatLng(
@@ -466,10 +463,8 @@ class LeafletMapState extends State<LeafletMap> with TickerProviderStateMixin, A
           },
         ),
         onPointerUp: (_) {
-          if (_zoom - mapController.zoom < .5 || _zoom - mapController.zoom > .5) {
-            _zoom = mapController.zoom;
-            MinGOData.mapReferencePoint = mapController.center;
-          }
+          MapMarkersController.update(MinGOData.stations);
+          MinGOData.mapReferencePoint = mapController.center;
         },
       ),
     );

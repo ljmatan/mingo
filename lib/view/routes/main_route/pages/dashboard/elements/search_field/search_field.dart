@@ -83,7 +83,13 @@ class DashboardPageSearchField extends StatefulWidget {
     'Filter',
   };
 
-  static const fuelKinds = <String>['Benzin', 'Dizel', 'Autoplin', 'Plinsko ulje', 'EV punjenje'];
+  static const fuelKinds = <String>[
+    'Benzin',
+    'Dizel',
+    'Autoplin',
+    'Plinsko ulje',
+    // 'EV punjenje',
+  ];
   static const distances = <String>['5 km', '10 km', '15 km', '25 km', '50 km'];
 
   @override

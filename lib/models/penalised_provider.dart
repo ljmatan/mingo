@@ -9,8 +9,8 @@ class PenalisedProviderModel {
 
   factory PenalisedProviderModel.fromJson(Map<String, dynamic> json) {
     return PenalisedProviderModel(
-      providerId: json['stationId'],
-      lastUpdated: DateTime.parse(json['lastUpdated']).subtract(const Duration(days: 10)),
+      providerId: json['providerId'],
+      lastUpdated: DateTime.parse(json['lastUpdated']),
     );
   }
 }

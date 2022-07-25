@@ -66,6 +66,7 @@ class _InputFieldsState extends State<_InputFields> {
             child: MinGOTextField(
               controller: widget.emailController,
               label: 'Email',
+              keyboardType: TextInputType.emailAddress,
               validator: (input) => TextInputValidators.emailValidator(input!),
             ),
           ),
@@ -212,6 +213,7 @@ class _InputFieldsState extends State<_InputFields> {
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
                             content: Text('Molimo potvrdite pretplatu putem svoje email adrese.'),
+                            duration: Duration(seconds: 6),
                           ),
                         );
                       } catch (e) {
